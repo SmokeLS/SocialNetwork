@@ -1,38 +1,111 @@
 import profileReducer from "./profile-reducer";
 import dialogsReducer from "./dialogs-reducer";
 import sidebarReducer from "./sidebar-reducer";
+import usersReducer from "./users-reducer";
 
 let store = {
     _state: {
         profilePage: {
-            posts: [
-                {id: 1, message: 'Hi, how are you?', likesCount: 12},
-                {id: 2, message: 'It\'s my first post', likesCount: 11},
-                {id: 3, message: 'Blabla', likesCount: 11},
-                {id: 4, message: 'Dada', likesCount: 11}
+            posts: [{
+                    id: 1,
+                    message: 'Hi, how are you?',
+                    likesCount: 12
+                },
+                {
+                    id: 2,
+                    message: 'It\'s my first post',
+                    likesCount: 11
+                },
+                {
+                    id: 3,
+                    message: 'Blabla',
+                    likesCount: 11
+                },
+                {
+                    id: 4,
+                    message: 'Dada',
+                    likesCount: 11
+                }
             ],
             newPostText: 'it-kamasutra.com'
         },
         dialogsPage: {
-            dialogs: [
-                {id: 1, name: 'Dimych'},
-                {id: 2, name: 'Andrew'},
-                {id: 3, name: 'Sveta'},
-                {id: 4, name: 'Sasha'},
-                {id: 5, name: 'Viktor'},
-                {id: 6, name: 'Valera'}
+            dialogs: [{
+                    id: 1,
+                    name: 'Dimych'
+                },
+                {
+                    id: 2,
+                    name: 'Andrew'
+                },
+                {
+                    id: 3,
+                    name: 'Sveta'
+                },
+                {
+                    id: 4,
+                    name: 'Sasha'
+                },
+                {
+                    id: 5,
+                    name: 'Viktor'
+                },
+                {
+                    id: 6,
+                    name: 'Valera'
+                }
             ],
-            messages: [
-                {id: 1, message: 'Hi'},
-                {id: 2, message: 'How is your it-kamasutra?'},
-                {id: 3, message: 'Yo'},
-                {id: 4, message: 'Yo'},
-                {id: 5, message: 'Yo'}
+            messages: [{
+                    id: 1,
+                    message: 'Hi'
+                },
+                {
+                    id: 2,
+                    message: 'How is your it-kamasutra?'
+                },
+                {
+                    id: 3,
+                    message: 'Yo'
+                },
+                {
+                    id: 4,
+                    message: 'Yo'
+                },
+                {
+                    id: 5,
+                    message: 'Yo'
+                }
             ],
             newMessageBody: ""
         },
+        usersPage: {
+            users: [{
+                    id: 1,
+                    avatar: "https://www.peoples.ru/art/music/pop/andrey_grizli/grizli_14.jpg",
+                    followed: false,
+                    fullName: "Andrew",
+                    status: "gotta work",
+                    location: {
+                        city: "Kolchugino",
+                        country: "Russia"
+                    }
+                },
+                {
+                    id: 2,
+                    avatar: "https://www.peoples.ru/art/music/pop/andrey_grizli/grizli_14.jpg",
+                    followed: true,
+                    fullName: "Sergey",
+                    status: "gotta find a job",
+                    location: {
+                        city: "Moscow",
+                        country: "Russia"
+                    }
+                }
+            ]
+        },
         sidebar: {}
     },
+
     _callSubscriber() {
         console.log('State changed');
     },
@@ -41,6 +114,7 @@ let store = {
         debugger;
         return this._state;
     },
+
     subscribe(observer) {
         this._callSubscriber = observer;  // observer
     },
@@ -49,6 +123,7 @@ let store = {
         this._state.profilePage = profileReducer(this._state.profilePage, action);
         this._state.dialogsPage = dialogsReducer(this._state.dialogsPage, action);
         this._state.sidebar = sidebarReducer(this._state.sidebar, action);
+        this._state.usersPage = usersReducer(this._state.usersPage, action);
 
         this._callSubscriber(this._state);
     }
