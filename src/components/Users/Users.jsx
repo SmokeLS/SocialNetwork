@@ -1,20 +1,26 @@
 import React from 'react';
 import s from './Users.module.css';
-import * as axios from "axios";
 import userPhoto from "../../assets/user.png";
 
-export default class User extends React.Component{
+const User = (props) => {
+    const pages = [];
 
-    constructor(props) {
-        super(props);
-
-        axios.get("https://social-network.samuraijs.com/api/1.0/users")
-             .then((response) => props.setUsers(response.data.items));
+    for (let i = 0; i < 5; i++) {
+        pages.push(i+1);
     }
-
-    render() {
-        return (
-            this.props.usersPage.users.map( user => {
+    
+    return (
+        <div>
+            <div>
+                {
+                    pages.map(item => {
+                        return <button key={item} className={`${props.selectedPage=== item && s.selected}`}
+                        onClick={() => {props.selectPage(item)}}>{item}</button>
+                    })
+                }
+            </div>
+        { 
+            props.users.map( user => {
                 return (
                     <div key={user.id}>
                         <div>
@@ -25,12 +31,15 @@ export default class User extends React.Component{
                         </div>
                         <div>
                             {(user.followed) ? <button 
-                                                onClick={() => { this.props.followToggle(user.id); }}>unfollow</button>:
-                                                <button onClick={() => {this.props.followToggle(user.id); }}>follow</button>}
+                                                onClick={() => { props.followToggle(user.id); }}>unfollow</button>:
+                                                <button onClick={() => {props.followToggle(user.id); }}>follow</button>}
                         </div>
                     </div>
                 );
             })
-        )
-    }
+        }
+     </div>
+    )
 }
+
+export default User;
