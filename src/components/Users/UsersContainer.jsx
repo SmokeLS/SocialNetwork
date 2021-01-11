@@ -1,5 +1,5 @@
 import React from 'react';
-import { followToggleAC, setUsersAC, setTotalCountAC, setSelectedPageAC,isLoadingAC} from "../../redux/users-reducer";
+import { followToggle, setUsers, setTotalCount, setSelectedPage,isLoadingNow} from "../../redux/users-reducer";
 import Users from "./Users.jsx";
 import * as axios from "axios";
 import { connect } from 'react-redux';
@@ -32,9 +32,10 @@ import Preloader from "../common/Preloader/Preloader.js";
         return (<>
             {this.props.isLoading ? <Preloader /> : null}
             <Users users={this.props.users}
-                        followToggle={this.props.followToggle}
-                        totalCount={this.props.totalCount}
-                        selectPage={this.selectPage}
+                    followToggle={this.props.followToggle}
+                    totalCount={this.props.totalCount}
+                    selectPage={this.selectPage}
+                    selectedPage={this.props.selectedPage}
             />
             </>
         )
@@ -54,24 +55,30 @@ const mapStateToProps = (state) => {
     )
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return ({
-        followToggle: (id) => {
-            dispatch(followToggleAC(id));
-        },
-        setUsers: (users) => {
-            dispatch(setUsersAC(users));
-        },
-        setSelectedPage: (selectedPage) => {
-            dispatch(setSelectedPageAC(selectedPage));
-        },
-        setTotalCount: (totalCount) => {
-            dispatch(setTotalCountAC(totalCount));
-        },
-        isLoadingNow: (isLoading) => {
-            dispatch(isLoadingAC(isLoading));
-        }
-    });
-}
+// const mapDispatchToProps = (dispatch) => {
+//     return ({
+//         followToggle: (id) => {
+//             dispatch(followToggle(id));
+//         },
+//         setUsers: (users) => {
+//             dispatch(setUsers(users));
+//         },
+//         setSelectedPage: (selectedPage) => {
+//             dispatch(setSelectedPage(selectedPage));
+//         },
+//         setTotalCount: (totalCount) => {
+//             dispatch(setTotalCount(totalCount));
+//         },
+//         isLoadingNow: (isLoading) => {
+//             dispatch(isLoading(isLoading));
+//         }
+//     });
+// }
 
-export default connect(mapStateToProps, mapDispatchToProps)(UsersContainer);
+export default connect(mapStateToProps, {
+    followToggle,
+    setUsers,
+    setSelectedPage,
+    setTotalCount,
+    isLoadingNow
+})(UsersContainer);

@@ -47,11 +47,11 @@ const usersReducer = (state = initialState, action) => {
     }
 }
 
-export const followToggleAC = (id) => ({type: FOLLOW_TOGGLE, id})
-export const setUsersAC = (users) =>
+export const followToggle = (id) => ({type: FOLLOW_TOGGLE, id})
+export const setUsers = (users) =>
     ({ type: SET_USERS, users})
-export const setTotalCountAC = (totalCount) => ({type: SET_TOTAL_COUNT, totalCount});
-export const setSelectedPageAC = (selectedPage) => ({type: SET_SELECTED_PAGE, selectedPage});
-export const isLoadingAC = (isLoading) => ({type: IS_LOADING_NOW, isLoading})
+export const setTotalCount = (totalCount) => ({type: SET_TOTAL_COUNT, totalCount});
+export const setSelectedPage = (selectedPage) => ({type: SET_SELECTED_PAGE, selectedPage});
+export const isLoadingNow = (isLoading) => ({type: IS_LOADING_NOW, isLoading})
 
 export default usersReducer;
