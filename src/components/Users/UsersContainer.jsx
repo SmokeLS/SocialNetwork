@@ -1,27 +1,28 @@
 import React from 'react';
-import { followToggle, setUsers, setTotalCount, setSelectedPage,isLoadingNow} from "../../redux/users-reducer";
+import { followToggle, setUsers, setTotalCount, setSelectedPage,isLoadingNow, followingInProcess} from "../../redux/users-reducer";
 import Users from "./Users.jsx";
 import * as axios from "axios";
 import { connect } from 'react-redux';
 import Preloader from "../common/Preloader/Preloader.js";
+import {userAPI} from "../../api/api.js";
 
  class UsersContainer extends React.Component{
 
     componentDidMount() {
         this.props.isLoadingNow(true);
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${this.props.selectedPage}&count=${this.props.pageSize}`)
-             .then((response) => {
-                this.props.setUsers(response.data.items);
+        userAPI.getUsers(this.props.selectedPage, this.props.pageSize)
+             .then((data) => {
+                this.props.setUsers(data.items);
                 this.props.isLoadingNow(false);
-                this.props.setTotalCount(response.data.totalCount);
+                this.props.setTotalCount(data.totalCount);
              });
     }
 
     selectPage = (pageNumber) => {
         this.props.setSelectedPage(pageNumber);
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${pageNumber}&count=${this.props.pageSize}`)
-             .then((response) => {
-                this.props.setUsers(response.data.items);
+        userAPI.getUsers(pageNumber, this.props.pageSize)
+             .then((data) => {
+                this.props.setUsers(data.items);
              });
     }
 
@@ -31,12 +32,8 @@ import Preloader from "../common/Preloader/Preloader.js";
 
         return (<>
             {this.props.isLoading ? <Preloader /> : null}
-            <Users users={this.props.users}
-                    followToggle={this.props.followToggle}
-                    totalCount={this.props.totalCount}
-                    selectPage={this.selectPage}
-                    selectedPage={this.props.selectedPage}
-            />
+            <Users {...this.props}/>
+
             </>
         )
         
@@ -50,7 +47,8 @@ const mapStateToProps = (state) => {
             totalCount: state.usersPage.totalCount,
             selectedPage: state.usersPage.selectedPage,
             pageSize: state.usersPage.pageSize,
-            isLoading: state.usersPage.isLoading
+            isLoading: state.usersPage.isLoading,
+            followingQuery: state.usersPage.followingQuery
         }
     )
 }
@@ -80,5 +78,6 @@ export default connect(mapStateToProps, {
     setUsers,
     setSelectedPage,
     setTotalCount,
-    isLoadingNow
+    isLoadingNow,
+    followingInProcess
 })(UsersContainer);

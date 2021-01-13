@@ -7,18 +7,21 @@ import Profile from './Profile';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
+
 class ProfileContainer extends React.Component {
 
     componentDidMount() {
-        const userId = this.props.match.params;
-        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/` + userId)
+        const userId = this.props.match.params.userId;
+
+        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/`+userId)
              .then((response) => {
                 this.props.setUsersProfile(response.data);
-                // this.props.isLoadingNow(false);
-            });
+            })
+            .catch((e) => alert(e));
     }
 
     render() {
+
         return (
             <Profile {...this.props}/>
         )

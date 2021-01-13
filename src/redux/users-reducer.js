@@ -3,13 +3,15 @@ const SET_USERS = 'SET_USERS';
 const SET_TOTAL_COUNT = 'SET_TOTAL_COUNT';
 const SET_SELECTED_PAGE = 'SET_SELECTED_PAGE';
 const IS_LOADING_NOW = 'IS_LOADING_NOW';
+const IS_FOLLOWING_NOW = 'IS_FOLLOWING_NOW';
 
 let initialState = {
     users: [ ],
     selectedPage: 1,
     pageSize: 5,
     totalCount: 0,
-    isLoading: false
+    isLoading: false,
+    followingQuery: []
 };
 
 const usersReducer = (state = initialState, action) => {
@@ -42,8 +44,16 @@ const usersReducer = (state = initialState, action) => {
             const newState = {...state, isLoading: action.isLoading};
             return newState;
         }
-        default:
+        case IS_FOLLOWING_NOW: {
+            if(action.isLoading) {
+                return{...state, followingQuery: [...state.followingQuery, action.userId]};
+            } else {
+                return {...state,followingQuery: state.followingQuery.filter(userId => userId !== action.userId)};
+            }
+        }
+        default: {
             return state;
+        }
     }
 }
 
@@ -53,5 +63,6 @@ export const setUsers = (users) =>
 export const setTotalCount = (totalCount) => ({type: SET_TOTAL_COUNT, totalCount});
 export const setSelectedPage = (selectedPage) => ({type: SET_SELECTED_PAGE, selectedPage});
 export const isLoadingNow = (isLoading) => ({type: IS_LOADING_NOW, isLoading})
+export const followingInProcess = (isLoading, userId) => ({type: IS_FOLLOWING_NOW, isLoading, userId})
 
 export default usersReducer;
