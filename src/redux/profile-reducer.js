@@ -1,10 +1,11 @@
 import {
-    userAPI
+    userAPI,
+    profileAPI
 } from '../api/api';
 
 const ADD_POST = 'ADD-POST';
-const UPDATE_NEW_POST_TEXT = 'UPDATE-NEW-POST-TEXT';
 const SET_USERS_PROFILE = 'SET_USERS_PROFILE';
+const SET_STATUS = 'SET_STATUS';
 
 let initialState = {
     posts: [{
@@ -28,8 +29,8 @@ let initialState = {
             likesCount: 11
         }
     ],
-    newPostText: 'it-kamasutra.com',
-    profile: null
+    profile: null,
+    status: ""
 };
 
 const profileReducer = (state = initialState, action) => {
@@ -38,20 +39,12 @@ const profileReducer = (state = initialState, action) => {
         case ADD_POST: {
             let newPost = {
                 id: 5,
-                message: state.newPostText,
+                message: action.newMessageBody,
                 likesCount: 0
             };
             newState = {
                 ...state,
                 posts: [...state.posts, newPost]
-            }
-            newState.newPostText = '';
-            return newState;
-        }
-        case UPDATE_NEW_POST_TEXT: {
-            newState = {
-                ...state,
-                newPostText: action.newText
             }
             return newState;
         }
@@ -62,6 +55,13 @@ const profileReducer = (state = initialState, action) => {
             }
             return newState;
         }
+        case SET_STATUS: {
+            newState ={
+                ...state,
+                status: action.status
+            }
+            return newState;
+        }
         default: {
             return state;
         }
@@ -69,25 +69,46 @@ const profileReducer = (state = initialState, action) => {
 }
 
 
-export const addPostActionCreator = () => ({
-    type: ADD_POST
+export const addPostActionCreator = (newMessageBody) => ({
+    type: ADD_POST, newMessageBody
 })
-export const updateNewPostTextActionCreator = (text) =>
-    ({
-        type: UPDATE_NEW_POST_TEXT,
-        newText: text
-    })
-export const setUsersProfile = (profile) => ({
+
+const setUsersProfile = (profile) => ({
     type: SET_USERS_PROFILE,
     profile
 })
 
+
+const setStatus = (status) => ({
+    type: SET_STATUS,
+    status
+})
+
 export const getUsersProfile = (userId) => (dispatch) => {
+
     userAPI.getProfile(userId)
         .then((response) => {
             dispatch(setUsersProfile(response.data));
         })
         .catch((e) => alert(e));
+}
+
+export const getUserStatus = (userId) => (dispatch) => {
+
+    profileAPI.getStatus(userId)
+        .then((response) => {
+            dispatch(setStatus(response.data));
+        });
+}
+
+
+export const setUserStatus = (status) => (dispatch) => {
+    profileAPI.setStatus(status)
+        .then((response) => {
+            if (response.data.resultCode === 0) {
+                dispatch(setStatus(status));
+            }
+        });
 }
 
 export default profileReducer;
