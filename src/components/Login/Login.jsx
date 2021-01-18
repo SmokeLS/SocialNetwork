@@ -1,15 +1,17 @@
 import React from "react";
 import { Field, Form } from "react-final-form";
+import { required } from './../../utils/validators/validator';
 
 const Login = (props) => {
     
     return (
         <div>
             <h1>Login</h1>
-            <LoginForm />
+            <LoginForm {...props}/>
         </div>
     )
 }
+
 
 const onSubmit = (formData) => {
     console.log(formData);
@@ -19,20 +21,34 @@ const validate = () => {
     console.log(true);
 }
 
-const LoginForm = () => (
+const LoginForm = (props) => (
     <Form
       onSubmit={onSubmit}
-      validate={validate}
+      validate={(e) => console.log()}
       render={({ handleSubmit }) => (
         <form onSubmit={handleSubmit}>
           <div>
             <label>login</label>
-            <Field name="login" component="input" placeholder="login" />
+            <Field name="firstName" validate={required}>
+              {({ input, meta }) => (
+                <div>
+                  <label>First Name</label>
+                  <input {...input} type="text" placeholder="First Name" />
+                  {meta.error && meta.touched && <span>{meta.error}</span>}
+                </div>
+              )}
+            </Field>
           </div>
 
           <div>
             <label>password</label>
-            <Field name="password" component="input" placeholder="password" />
+            <Field name="password" component="input" placeholder="password" >
+            {props => (
+              <div>
+                <input {...props.input} />
+              </div>
+            )}
+            </Field>
           </div>
 
           <div>
