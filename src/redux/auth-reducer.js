@@ -1,12 +1,13 @@
 import {authAPI} from '../api/api';
-
 const SET_USERS_DATA = 'SET_USERS_DATA';
+const DISPLAY_ERROR = 'DISPLAY_ERROR';
 
 let initialState = {
     id: null,
     login: null,
     email: null,
-    isAuth: false
+    isAuth: false,
+    error: ""
 };
 
 const authReducer = (state = initialState, action) => {
@@ -15,7 +16,13 @@ const authReducer = (state = initialState, action) => {
             const newState = {
                 ...state,
                 ...action.data,
-                isAuth: true
+            }
+            return newState;
+        }
+        case DISPLAY_ERROR: {
+            const newState = {
+                ...state,
+                error: action.error
             }
             return newState;
         }
@@ -24,17 +31,24 @@ const authReducer = (state = initialState, action) => {
     }
 }
 
-const setAuthUsersData = (id, login, email) => ({
+const displayError = (error) => ({
+    type: DISPLAY_ERROR,
+    error
+})
+
+const setAuthUsersData = (id, login, email, isAuth, error) => ({
     type: SET_USERS_DATA,
     data: {
         id,
         login,
-        email
+        email,
+        isAuth,
+        error
     }
 })
 
 export const getMyProfile = () => (dispatch) => {
-    authAPI.getMyProfile()
+    return authAPI.getMyProfile()
         .then((response) => {
             if (response.data.resultCode === 0) {
                 const {
@@ -42,7 +56,28 @@ export const getMyProfile = () => (dispatch) => {
                     login,
                     email
                 } = response.data.data;
-                dispatch(setAuthUsersData(id, login, email));
+                dispatch(setAuthUsersData(id, login, email, true, ""));
+            }
+        });
+}
+
+export const signIn = (login, password, rememberMe) => (dispatch) => {
+
+    authAPI.login(login, password, rememberMe)
+        .then((response) => {
+            if (response.data.resultCode === 0) {
+                dispatch(getMyProfile());
+            }else {
+                dispatch(displayError("Login or password is incorrect"));
+            }
+        });
+}
+
+export const onExit = () => (dispatch) => {
+    authAPI.logout()
+        .then((response) => {
+            if (response.data.resultCode === 0) {
+                dispatch(setAuthUsersData(null, null, null, false, ""));
             }
         });
 }

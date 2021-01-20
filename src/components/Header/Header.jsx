@@ -3,13 +3,12 @@ import s from './Header.module.css';
 import {NavLink} from 'react-router-dom';
 
 const Header = (props) => {
-
-    console.log(props);
+    
     return <header className={s.header}>
         <img src='https://www.freelogodesign.org/Content/img/logo-ex-7.png' />
 
         <div className={s.loginBlock}>
-            { props.isAuth ? props.login
+            { props.isAuth ? (<div>{props.login}<button onClick={props.onExit}>logout</button></div>)
                 : <NavLink to={'/login'}>Login</NavLink> }
         </div>
     </header>

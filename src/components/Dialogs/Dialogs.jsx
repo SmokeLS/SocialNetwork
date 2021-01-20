@@ -2,8 +2,9 @@ import React from 'react';
 import s from './Dialogs.module.css';
 import DialogItem from "./DialogItem/DialogItem";
 import Message from "./Message/Message";
-import {Textarea, Input} from "./../../utils/validators/validator";
+import { required} from "./../../utils/validators/validator";
 import {Form, Field} from 'react-final-form';
+import { Textarea } from '../common/FormControl/FormControl';
 
 const Dialogs = (props) => {
     let onSendMessageClick = (values) => {
@@ -27,13 +28,19 @@ const Dialogs = (props) => {
                 </div>
             <Form
             onSubmit={(e) => onSendMessageClick(e)}
-            validate={() => console.log(true)}
+            validate={() => console.log()}
             render={({ handleSubmit }) => (
             <form onSubmit={handleSubmit}>
-                    <div><Field component="textarea"
-                                name='newMessageBody'
-                                placeholder='Enter your message'></Field></div>
-                    <div><button onClick={onSendMessageClick}>Send</button></div>
+                <div>
+                    <Field name='newMessageBody' validate={required} placeholder='Enter your message'>
+                        {(props) => (
+                            <div>
+                                <Textarea {...props}/>    
+                            </div>
+                        )}
+                    </Field>
+                </div>
+                <div><button onClick={onSendMessageClick}>Send</button></div>
             </form>
             )}
             />   

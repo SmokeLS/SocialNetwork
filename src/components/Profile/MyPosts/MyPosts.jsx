@@ -1,13 +1,13 @@
 import React from 'react';
 import { Field, Form } from 'react-final-form';
+import { required } from '../../../utils/validators/validator';
+import { Textarea } from '../../common/FormControl/FormControl';
 import s from './MyPosts.module.css';
 import Post from './Post/Post';
 
 const MyPosts = (props) => {
     let postsElements =
         props.posts.map( p => <Post message={p.message} likesCount={p.likesCount}/>);
-
-    let newPostElement = React.createRef();
     
     const onSendMessageClick = (values) => {
         props.addPost(values.newMessageBody);
@@ -19,15 +19,19 @@ const MyPosts = (props) => {
             <div>
                 <Form
                     onSubmit={(e) => onSendMessageClick(e)}
-                    validate={() => console.log(true)}
+                    validate={() => console.log()}
                     render={({ handleSubmit }) => (
                     <form onSubmit={handleSubmit}>
-                            <div><Field component="textarea"
-                                        ref={newPostElement}
-                                        name='newMessageBody'
-                                        value={props.newPostText}
-                                        placeholder='Enter your message'></Field></div>
-                            <div><button onSubmit={onSendMessageClick}>Add post</button></div>
+                            <div>
+                            <Field name='newMessageBody' validate={required} placeholder='Enter your message' value={props.newPostText}>
+                                {(props) => (
+                                    <div>
+                                         <Textarea {...props}/>    
+                                         <div><button onSubmit={onSendMessageClick}>Add post</button></div>
+                                    </div>
+                                )}
+                            </Field>
+                            </div>
                     </form>
                     )}
                 />

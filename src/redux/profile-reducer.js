@@ -30,7 +30,7 @@ let initialState = {
         }
     ],
     profile: null,
-    status: ""
+    userId: null
 };
 
 const profileReducer = (state = initialState, action) => {
