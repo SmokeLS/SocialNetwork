@@ -109,7 +109,7 @@ export const followingInProcess = (isLoading, userId) => ({
     userId
 })
 
-export const getUsers = (selectedPage, pageSize) => (dispatch) => {
+export const requestUsers = (selectedPage, pageSize) => (dispatch) => {
     dispatch(isLoadingNow(true));
 
     userAPI.getUsers(selectedPage, pageSize)

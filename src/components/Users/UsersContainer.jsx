@@ -1,21 +1,22 @@
 import React from 'react';
-import { followToggle, setUsers, setTotalCount, setSelectedPage, isLoadingNow, followingInProcess, getUsers, follow, unfollow } from "../../redux/users-reducer";
+import { followToggle, setUsers, setTotalCount, setSelectedPage, isLoadingNow, followingInProcess, requestUsers, follow, unfollow } from "../../redux/users-reducer";
 import Users from "./Users.jsx";
 import { connect } from 'react-redux';
 import Preloader from "../common/Preloader/Preloader.js";
 import { userAPI } from "../../api/api.js";
 import withAuthRedirect from '../hoc/withAuthRedirect.js';
 import { compose } from 'redux';
+import { getUsers, getTotalCount, getSelectedPage, getPageSize, getIsLoading, getFollowingQuery } from './../../redux/users-selectors';
 
 class UsersContainer extends React.Component {
 
     componentDidMount() {
-        this.props.getUsers(this.props.selectedPage, this.props.pageSize);
+        this.props.requestUsers(this.props.selectedPage, this.props.pageSize);
     }
 
     selectPage = (pageNumber) => {
         this.props.setSelectedPage(pageNumber);
-        userAPI.getUsers(pageNumber, this.props.pageSize)
+        userAPI.requestUsers(pageNumber, this.props.pageSize)
             .then((data) => {
                 this.props.setUsers(data.items);
             });
@@ -37,17 +38,17 @@ class UsersContainer extends React.Component {
 const mapStateToProps = (state) => {
     return (
         {
-            users: state.usersPage.users,
-            totalCount: state.usersPage.totalCount,
-            selectedPage: state.usersPage.selectedPage,
-            pageSize: state.usersPage.pageSize,
-            isLoading: state.usersPage.isLoading,
-            followingQuery: state.usersPage.followingQuery
+            users: getUsers(state),
+            totalCount: getTotalCount(state),
+            selectedPage: getSelectedPage(state),
+            pageSize: getPageSize(state),
+            isLoading: getIsLoading(state),
+            followingQuery: getFollowingQuery(state)
         }
     )
 }
 
 export default compose(
 
-    connect(mapStateToProps, {followToggle, setUsers, setSelectedPage, setTotalCount, isLoadingNow, getUsers, follow, unfollow })
+    connect(mapStateToProps, {followToggle, setUsers, setSelectedPage, setTotalCount, isLoadingNow, requestUsers, follow, unfollow })
 )(UsersContainer)
