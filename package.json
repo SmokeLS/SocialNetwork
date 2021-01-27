@@ -29,5 +29,9 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "prettier": "^2.2.1",
+    "react-test-renderer": "^16.14.0"
+  }
 }

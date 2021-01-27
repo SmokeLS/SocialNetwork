@@ -4,25 +4,20 @@ import Preloader from '../../common/Preloader/Preloader.js';
 import ProfileStatus from './ProfileStatus';
 
 const ProfileInfo = (props) => {
-    
+  const { profile, setUserStatus, status } = props;
 
-    if (!props.profile) {
-        return <Preloader />
-    }
+  if (!props.profile) {
+    return <Preloader />;
+  }
 
-    return (
-        <div>
-            {/* <div>
-                <img
-                    src='https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg?auto=compress&cs=tinysrgb&h=350'/>
-            </div> */}
-            <div className={s.descriptionBlock}>
-                 <img
-                    src={props.profile.photos.large}/>
-                <ProfileStatus status={props.status} setUserStatus={props.setUserStatus}/>
-            </div>
-        </div>
-    )
-}
+  return (
+    <div>
+      <div className={s.descriptionBlock}>
+        <img alt="#" src={profile.photos.large} />
+        <ProfileStatus status={status} setUserStatus={setUserStatus} />
+      </div>
+    </div>
+  );
+};
 
 export default ProfileInfo;

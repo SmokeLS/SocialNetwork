@@ -1,35 +1,33 @@
-import {authAPI} from '../api/api';
 import { getMyProfile } from './auth-reducer';
-const SET_INITIALIZED_SETTINGS = 'SET_INITIALIZED_SETTINGS';
 
-let initialState = {
-    initialized: false
+const SET_INITIALIZED_SETTINGS = 'app/SET_INITIALIZED_SETTINGS';
+
+const initialState = {
+  initialized: false,
 };
 
 const appReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case SET_INITIALIZED_SETTINGS: {
-            const newState = {
-                ...state,
-                initialized: true
-            }
-            return newState;
-        }
-        default:
-            return state;
+  switch (action.type) {
+    case SET_INITIALIZED_SETTINGS: {
+      return {
+        ...state,
+        initialized: true,
+      };
     }
-}
+    default:
+      return state;
+  }
+};
 
 const initializedSettings = () => ({
-    type: SET_INITIALIZED_SETTINGS
-})
-
+  type: SET_INITIALIZED_SETTINGS,
+});
 
 export const setInitializedSettings = () => (dispatch) => {
-    const promise = dispatch(getMyProfile());
-    promise.then((response) => {
-        dispatch(initializedSettings())
-    });
-}
+  const promise = dispatch(getMyProfile());
+  promise.then((response) => {
+    dispatch(initializedSettings());
+  });
+};
 
 export default appReducer;
