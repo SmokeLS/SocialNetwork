@@ -1,6 +1,7 @@
 import React from 'react';
 import s from './ProfileInfo.module.css';
 import Preloader from '../../common/Preloader/Preloader.js';
+import userPhoto from '../../../assets/user.png';
 import ProfileStatus from './ProfileStatus';
 
 const ProfileInfo = (props) => {
@@ -13,7 +14,7 @@ const ProfileInfo = (props) => {
   return (
     <div>
       <div className={s.descriptionBlock}>
-        <img alt="#" src={profile.photos.large} />
+        <img alt="#" src={profile.photos.large ? profile.photos.large : userPhoto} />
         <ProfileStatus status={status} setUserStatus={setUserStatus} />
       </div>
     </div>

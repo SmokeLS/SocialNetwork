@@ -10,7 +10,7 @@ const IS_FOLLOWING_NOW = 'user/IS_FOLLOWING_NOW';
 const initialState = {
   users: [],
   selectedPage: 1,
-  pageSize: 5,
+  pageSize: 20,
   totalCount: 0,
   isLoading: false,
   followingQuery: [],

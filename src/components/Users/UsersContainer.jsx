@@ -38,13 +38,13 @@ class UsersContainer extends React.Component {
   };
 
   render() {
-    const { isLoading } = this.props;
-    // const totalPages = Math.ceil(totalCount / pageSize);
+    const { isLoading, totalCount, pageSize } = this.props;
+    const totalPages = Math.ceil(totalCount / pageSize);
 
     return (
       <>
         {isLoading ? <Preloader /> : null}
-        <Users {...this.props} selectPage={this.selectPage} />
+        <Users {...this.props} selectPage={this.selectPage} totalPages={totalPages} />
       </>
     );
   }
