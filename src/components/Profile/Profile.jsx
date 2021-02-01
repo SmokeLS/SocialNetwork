@@ -3,11 +3,32 @@ import ProfileInfo from './ProfileInfo/ProfileInfo';
 import MyPostsContainer from './MyPosts/MyPostsContainer';
 
 const Profile = (props) => {
-  const { profile, status, setUserStatus } = props;
+  const {
+    profile,
+    status,
+    setUserStatus,
+    isOwner,
+    setAvatar,
+    changeMode,
+    editProfileMode,
+    setUserProfileInformation,
+    userId,
+    error,
+  } = props;
 
   return (
     <div>
-      <ProfileInfo profile={profile} status={status} setUserStatus={setUserStatus} />
+      <ProfileInfo
+        isOwner={isOwner}
+        profile={profile}
+        status={status}
+        setUserStatus={setUserStatus}
+        setAvatar={setAvatar}
+        changeMode={changeMode}
+        editProfileMode={editProfileMode}
+        setUserProfileInformation={setUserProfileInformation}
+        userId={userId}
+      />
       <MyPostsContainer profile={profile} />
     </div>
   );

@@ -36,6 +36,14 @@ export const profileAPI = {
   setStatus(status) {
     return instance.put('profile/status', { status: status });
   },
+  setUserAvatar(photo) {
+    const formData = new FormData();
+    formData.append('image', photo);
+    return instance.put('profile/photo', formData);
+  },
+  setUserProfileInformation(information) {
+    return instance.put('profile', information);
+  },
 };
 
 export const authAPI = {

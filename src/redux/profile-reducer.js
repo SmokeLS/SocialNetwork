@@ -1,9 +1,13 @@
 import { userAPI, profileAPI } from '../api/api';
+import { FORM_ERROR } from 'final-form';
 
 const ADD_POST = 'profile/ADD-POST';
 const SET_USERS_PROFILE = 'profile/SET_USERS_PROFILE';
 const SET_STATUS = 'profile/SET_STATUS';
 const DELETE_POST = 'profile/DELETE_POST';
+const PHOTO_IS_SETTED = 'user/PHOTO_IS_SETTED';
+const CHANGE_PROFILE_MODE = 'profile/CHANGE_PROFILE_MODE';
+const DISPLAY_ERROR = 'profile/DISPLAY_ERROR';
 
 const initialState = {
   posts: [
@@ -30,6 +34,7 @@ const initialState = {
   ],
   profile: null,
   userId: null,
+  editProfileMode: false,
 };
 
 const profileReducer = (state = initialState, action) => {
@@ -63,6 +68,18 @@ const profileReducer = (state = initialState, action) => {
         status: action.status,
       };
     }
+    case PHOTO_IS_SETTED: {
+      return {
+        ...state,
+        profile: { ...state.profile, photos: action.photos },
+      };
+    }
+    case CHANGE_PROFILE_MODE: {
+      return {
+        ...state,
+        editProfileMode: !state.editProfileMode,
+      };
+    }
     default: {
       return state;
     }
@@ -84,9 +101,18 @@ const setUsersProfile = (profile) => ({
   profile,
 });
 
+export const setUserAvatar = (photos) => ({
+  type: PHOTO_IS_SETTED,
+  photos,
+});
+
 const setStatus = (status) => ({
   type: SET_STATUS,
   status,
+});
+
+export const changeMode = () => ({
+  type: CHANGE_PROFILE_MODE,
 });
 
 export const getUsersProfile = (userId) => async (dispatch) => {
@@ -103,6 +129,24 @@ export const setUserStatus = (status) => async (dispatch) => {
   const response = await profileAPI.setStatus(status);
   if (response.data.resultCode === 0) {
     dispatch(setStatus(status));
+  }
+};
+
+export const setAvatar = (photo) => async (dispatch) => {
+  const response = await profileAPI.setUserAvatar(photo);
+
+  if (response.data.resultCode === 0) {
+    dispatch(setUserAvatar(response.data.data.photos));
+  }
+};
+
+export const setUserProfileInformation = (information, userId) => async (dispatch) => {
+  const response = await profileAPI.setUserProfileInformation(information);
+
+  if (response.data.resultCode === 0) {
+    dispatch(getUsersProfile(userId));
+  } else {
+    return { [FORM_ERROR]: response.data.messages };
   }
 };
 
