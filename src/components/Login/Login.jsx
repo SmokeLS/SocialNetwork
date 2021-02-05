@@ -6,8 +6,8 @@ import { Input } from '../common/FormControl/FormControl';
 import { required } from './../../utils/validators/validator';
 
 const Login = (props) => {
-  const onSubmit = ({ login, password, rememberMe = false }) => {
-    props.signIn(login, password, rememberMe);
+  const onSubmit = ({ login, password, rememberMe = false, captchaUrl = null }) => {
+    props.signIn(login, password, rememberMe, captchaUrl);
   };
 
   return (
@@ -40,6 +40,18 @@ const Login = (props) => {
               <Field name="rememberMe" component="input" type="checkbox" />
             </div>
 
+            {props.captchaUrl && <img src={props.captchaUrl} alt="#" />}
+            {props.captchaUrl && (
+              <Field name="captchaUrl" type="text" validate={required}>
+                {(props) => (
+                  <div>
+                    <label>Captcha: </label>
+                    <Input {...props} />
+                  </div>
+                )}
+              </Field>
+            )}
+
             <button type="submit">Submit</button>
             <div>{props.error}</div>
           </form>
@@ -52,6 +64,7 @@ const Login = (props) => {
 const mapStateToProps = (state) => ({
   isAuth: state.auth.isAuth,
   error: state.auth.error,
+  captchaUrl: state.auth.captchaUrl,
 });
 
 const LoginReactForm = connect(mapStateToProps, { signIn })(Login);
