@@ -14,7 +14,7 @@ const Dialogs = (props) => {
   };
 
   const dialogsElements = dialogsPage.dialogs.map((d) => <DialogItem name={d.name} id={d.id} key={d.id} />);
-  const messagesElements = dialogsPage.messages.map((m) => <Message message={m.message} />);
+  const messagesElements = dialogsPage.messages.map((m) => <Message message={m.message} key={m.id} />);
 
   return (
     <>
@@ -38,7 +38,7 @@ const Dialogs = (props) => {
               </Field>
             </div>
             <div>
-              <button onClick={onSendMessageClick}>Send</button>
+              <button>Send</button>
             </div>
           </form>
         )}

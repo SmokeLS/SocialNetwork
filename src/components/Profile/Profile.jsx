@@ -13,7 +13,6 @@ const Profile = (props) => {
     editProfileMode,
     setUserProfileInformation,
     userId,
-    error,
   } = props;
 
   return (

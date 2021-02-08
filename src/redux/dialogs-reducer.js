@@ -59,7 +59,7 @@ const dialogsReducer = (state = initialState, action) => {
         messages: [
           ...state.messages,
           {
-            id: 6,
+            id: state.messages.length + 1,
             message: action.newMessageBody,
           },
         ],

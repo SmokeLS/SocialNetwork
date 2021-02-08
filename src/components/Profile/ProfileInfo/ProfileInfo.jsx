@@ -16,7 +16,6 @@ const ProfileInfo = (props) => {
     changeMode,
     editProfileMode,
     setUserProfileInformation,
-    error,
   } = props;
 
   if (!props.profile) {

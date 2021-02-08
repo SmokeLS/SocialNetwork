@@ -1,4 +1,4 @@
-import { userAPI, profileAPI } from '../api/api';
+import { profileAPI } from '../api/api';
 import { FORM_ERROR } from 'final-form';
 
 const ADD_POST = 'profile/ADD-POST';
@@ -7,7 +7,6 @@ const SET_STATUS = 'profile/SET_STATUS';
 const DELETE_POST = 'profile/DELETE_POST';
 const PHOTO_IS_SETTED = 'user/PHOTO_IS_SETTED';
 const CHANGE_PROFILE_MODE = 'profile/CHANGE_PROFILE_MODE';
-const DISPLAY_ERROR = 'profile/DISPLAY_ERROR';
 
 const initialState = {
   posts: [
@@ -41,7 +40,7 @@ const profileReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_POST: {
       const newPost = {
-        id: 5,
+        id: state.posts.length + 1,
         message: action.newMessageBody,
         likesCount: 0,
       };
@@ -116,7 +115,7 @@ export const changeMode = () => ({
 });
 
 export const getUsersProfile = (userId) => async (dispatch) => {
-  const response = await userAPI.getProfile(userId);
+  const response = await profileAPI.getProfile(userId);
   dispatch(setUsersProfile(response.data));
 };
 

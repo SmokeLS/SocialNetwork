@@ -4,7 +4,7 @@ import { required } from '../../../utils/validators/validator';
 import { Input, Textarea } from './../../common/FormControl/FormControl';
 
 const EditFormProfileData = (props) => {
-  const { aboutMe, contacts, lookingForAJob, lookingForAJobDescription, fullName, userId } = props.profile;
+  const { contacts, userId } = props.profile;
 
   const sendInformation = async (e) => {
     const response = await props.setUserProfileInformation(e, userId);
@@ -40,7 +40,7 @@ const EditFormProfileData = (props) => {
             {(props) => (
               <div>
                 <label>Looking for a job:</label>
-                <input {...props.input} {...props.meta} type="checkbox" />
+                <input {...props.input} type="checkbox" />
               </div>
             )}
           </Field>

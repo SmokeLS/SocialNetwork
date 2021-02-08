@@ -8,7 +8,7 @@ import Post from './Post/Post';
 const MyPosts = (props) => {
   const { posts, addPost, newPostText } = props;
 
-  let postsElements = posts.map((p) => <Post message={p.message} likesCount={p.likesCount} />);
+  let postsElements = posts.map((p, index) => <Post message={p.message} likesCount={p.likesCount} key={index} />);
 
   const onSendMessageClick = (values) => {
     addPost(values.newMessageBody);

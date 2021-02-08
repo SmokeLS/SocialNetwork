@@ -3,7 +3,6 @@ import React from 'react';
 const FormProfileData = (props) => {
   const { aboutMe, contacts, lookingForAJob, lookingForAJobDescription, fullName } = props.profile;
 
-  console.log(lookingForAJob);
   return (
     <div>
       {props.isOwner && <button onClick={props.changeMode}>Edit</button>}
