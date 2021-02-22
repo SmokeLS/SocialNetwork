@@ -5,15 +5,17 @@ const DISPLAY_ERROR = 'auth/DISPLAY_ERROR';
 const DISPLAY_CAPTCHA = 'auth/DISPLAY_CAPTCHA';
 
 const initialState = {
-  id: null,
-  login: null,
-  email: null,
+  id: null as number | null,
+  login: null as string | null,
+  email: null as string | null,
   isAuth: false,
   error: null,
-  captchaUrl: null,
+  captchaUrl: null as number | null,
 };
 
-const authReducer = (state = initialState, action) => {
+type InitialStateType = typeof initialState;
+
+const authReducer = (state = initialState, action: any): InitialStateType => {
   switch (action.type) {
     case SET_USERS_DATA:
     case DISPLAY_CAPTCHA: {
@@ -33,12 +35,36 @@ const authReducer = (state = initialState, action) => {
   }
 };
 
-const displayError = (error) => ({
+type DisplayErrorType = {
+  type: typeof DISPLAY_ERROR;
+  error: any;
+};
+
+const displayError = (error: any): DisplayErrorType => ({
   type: DISPLAY_ERROR,
   error,
 });
 
-const setAuthUsersData = (id, login, email, isAuth, error) => ({
+type DataType = {
+  id: number | null;
+  login: string | null;
+  email: string | null;
+  isAuth: boolean;
+  error: any | null;
+};
+
+type SetAuthUsersDataActionType = {
+  type: typeof SET_USERS_DATA;
+  data: DataType;
+};
+
+const setAuthUsersData = (
+  id: number | null,
+  login: string | null,
+  email: string | null,
+  isAuth: boolean,
+  error: any | null,
+): SetAuthUsersDataActionType => ({
   type: SET_USERS_DATA,
   data: {
     id,
@@ -49,12 +75,17 @@ const setAuthUsersData = (id, login, email, isAuth, error) => ({
   },
 });
 
-const displayCaptcha = (captchaUrl) => ({
+type DisplayCaptchaType = {
+  type: typeof DISPLAY_CAPTCHA;
+  data: { captchaUrl: string };
+};
+
+const displayCaptcha = (captchaUrl: string): DisplayCaptchaType => ({
   type: DISPLAY_CAPTCHA,
   data: { captchaUrl },
 });
 
-export const getMyProfile = () => async (dispatch) => {
+export const getMyProfile = () => async (dispatch: any) => {
   const response = await authAPI.getMyProfile();
 
   if (response.data.resultCode === 0) {
@@ -63,7 +94,9 @@ export const getMyProfile = () => async (dispatch) => {
   }
 };
 
-export const signIn = (login, password, rememberMe, captchaUrl) => async (dispatch) => {
+export const signIn = (login: string, password: string, rememberMe: boolean, captchaUrl: string) => async (
+  dispatch: any,
+) => {
   const response = await authAPI.login(login, password, rememberMe, captchaUrl);
 
   if (response.data.resultCode === 0) {
@@ -76,7 +109,7 @@ export const signIn = (login, password, rememberMe, captchaUrl) => async (dispat
   }
 };
 
-export const onExit = () => async (dispatch) => {
+export const onExit = () => async (dispatch: any) => {
   const response = await authAPI.logout();
 
   if (response.data.resultCode === 0) {
@@ -84,7 +117,7 @@ export const onExit = () => async (dispatch) => {
   }
 };
 
-export const onDisplayCaptcha = () => async (dispatch) => {
+export const onDisplayCaptcha = () => async (dispatch: any) => {
   const response = await securityAPI.getCaptcha();
 
   if (response.data.url) {

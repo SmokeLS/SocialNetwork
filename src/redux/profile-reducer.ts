@@ -1,5 +1,6 @@
 import { profileAPI } from '../api/api';
 import { FORM_ERROR } from 'final-form';
+import { PhotosType, PostType, ProfileType } from '../types/types';
 
 const ADD_POST = 'profile/ADD-POST';
 const SET_USERS_PROFILE = 'profile/SET_USERS_PROFILE';
@@ -7,6 +8,8 @@ const SET_STATUS = 'profile/SET_STATUS';
 const DELETE_POST = 'profile/DELETE_POST';
 const PHOTO_IS_SETTED = 'user/PHOTO_IS_SETTED';
 const CHANGE_PROFILE_MODE = 'profile/CHANGE_PROFILE_MODE';
+
+type InitialStateType = typeof initialState;
 
 const initialState = {
   posts: [
@@ -30,13 +33,14 @@ const initialState = {
       message: 'Dada',
       likesCount: 11,
     },
-  ],
-  profile: null,
-  userId: null,
+  ] as Array<PostType>,
+  profile: null as ProfileType | null,
+  userId: null as number | null,
   editProfileMode: false,
+  status: '',
 };
 
-const profileReducer = (state = initialState, action) => {
+const profileReducer = (state = initialState, action: any): InitialStateType => {
   switch (action.type) {
     case ADD_POST: {
       const newPost = {
@@ -70,7 +74,7 @@ const profileReducer = (state = initialState, action) => {
     case PHOTO_IS_SETTED: {
       return {
         ...state,
-        profile: { ...state.profile, photos: action.photos },
+        profile: { ...state.profile, photos: action.photos } as ProfileType,
       };
     }
     case CHANGE_PROFILE_MODE: {
@@ -85,53 +89,82 @@ const profileReducer = (state = initialState, action) => {
   }
 };
 
-export const deletePost = (postId) => ({
+type DeletePostType = {
+  type: typeof DELETE_POST;
+  postId: number;
+};
+
+export const deletePost = (postId: number): DeletePostType => ({
   type: DELETE_POST,
   postId,
 });
 
-export const addPost = (newMessageBody) => ({
+type AddPostType = {
+  type: typeof ADD_POST;
+  newMessageBody: string;
+};
+
+export const addPost = (newMessageBody: string): AddPostType => ({
   type: ADD_POST,
   newMessageBody,
 });
 
-const setUsersProfile = (profile) => ({
+type SetUsersProfileType = {
+  type: typeof SET_USERS_PROFILE;
+  profile: ProfileType;
+};
+
+const setUsersProfile = (profile: ProfileType): SetUsersProfileType => ({
   type: SET_USERS_PROFILE,
   profile,
 });
 
-export const setUserAvatar = (photos) => ({
+type SetUserAvatarType = {
+  type: typeof PHOTO_IS_SETTED;
+  photos: PhotosType;
+};
+
+export const setUserAvatar = (photos: PhotosType): SetUserAvatarType => ({
   type: PHOTO_IS_SETTED,
   photos,
 });
 
-const setStatus = (status) => ({
+type SetStatusType = {
+  type: typeof SET_STATUS;
+  status: string;
+};
+
+const setStatus = (status: string): SetStatusType => ({
   type: SET_STATUS,
   status,
 });
 
-export const changeMode = () => ({
+type ChangeModeType = {
+  type: typeof CHANGE_PROFILE_MODE;
+};
+
+export const changeMode = (): ChangeModeType => ({
   type: CHANGE_PROFILE_MODE,
 });
 
-export const getUsersProfile = (userId) => async (dispatch) => {
+export const getUsersProfile = (userId: number) => async (dispatch: any) => {
   const response = await profileAPI.getProfile(userId);
   dispatch(setUsersProfile(response.data));
 };
 
-export const getUserStatus = (userId) => async (dispatch) => {
+export const getUserStatus = (userId: number) => async (dispatch: any) => {
   const response = await profileAPI.getStatus(userId);
   dispatch(setStatus(response.data));
 };
 
-export const setUserStatus = (status) => async (dispatch) => {
+export const setUserStatus = (status: string) => async (dispatch: any) => {
   const response = await profileAPI.setStatus(status);
   if (response.data.resultCode === 0) {
     dispatch(setStatus(status));
   }
 };
 
-export const setAvatar = (photo) => async (dispatch) => {
+export const setAvatar = (photo: any) => async (dispatch: any) => {
   const response = await profileAPI.setUserAvatar(photo);
 
   if (response.data.resultCode === 0) {
@@ -139,7 +172,8 @@ export const setAvatar = (photo) => async (dispatch) => {
   }
 };
 
-export const setUserProfileInformation = (information, userId) => async (dispatch) => {
+export const setUserProfileInformation = (information: ProfileType) => async (dispatch: any, getState: any) => {
+  const userId = getState().auth.userId;
   const response = await profileAPI.setUserProfileInformation(information);
 
   if (response.data.resultCode === 0) {

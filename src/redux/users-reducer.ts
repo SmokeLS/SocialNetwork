@@ -1,4 +1,5 @@
-import { userAPI } from '../api/api.js';
+import { userAPI } from '../api/api';
+import { UserType } from '../types/types';
 
 const FOLLOW_TOGGLE = 'user/FOLLOW_TOGGLE';
 const SET_USERS = 'user/SET_USERS';
@@ -8,15 +9,17 @@ const IS_LOADING_NOW = 'user/IS_LOADING_NOW';
 const IS_FOLLOWING_NOW = 'user/IS_FOLLOWING_NOW';
 
 const initialState = {
-  users: [],
+  users: [] as Array<UserType>,
   selectedPage: 1,
   pageSize: 20,
   totalCount: 0,
   isLoading: false,
-  followingQuery: [],
+  followingQuery: [] as Array<number>, // users' ID
 };
 
-const usersReducer = (state = initialState, action) => {
+type InitialStateType = typeof initialState;
+
+const usersReducer = (state = initialState, action: any): InitialStateType => {
   switch (action.type) {
     case FOLLOW_TOGGLE: {
       return {
@@ -79,38 +82,69 @@ const usersReducer = (state = initialState, action) => {
   }
 };
 
-export const followToggle = (id) => ({
+type FollowToggleType = {
+  type: typeof FOLLOW_TOGGLE;
+  id: number;
+};
+
+export const followToggle = (id: number): FollowToggleType => ({
   type: FOLLOW_TOGGLE,
   id,
 });
 
-export const setUsers = (users) => ({
+type SetUsersType = {
+  type: typeof SET_USERS;
+  users: Array<UserType>;
+};
+
+export const setUsers = (users: Array<UserType>): SetUsersType => ({
   type: SET_USERS,
   users,
 });
 
-export const setTotalCount = (totalCount) => ({
+type SetTotalCountType = {
+  type: typeof SET_TOTAL_COUNT;
+  totalCount: number;
+};
+
+export const setTotalCount = (totalCount: number): SetTotalCountType => ({
   type: SET_TOTAL_COUNT,
   totalCount,
 });
 
-export const setSelectedPage = (selectedPage) => ({
+type setSelectedPageType = {
+  type: typeof SET_SELECTED_PAGE;
+  selectedPage: number;
+};
+
+export const setSelectedPage = (selectedPage: number): setSelectedPageType => ({
   type: SET_SELECTED_PAGE,
   selectedPage,
 });
 
-export const isLoadingNow = (isLoading) => ({
+type isLoadingNowType = {
+  type: typeof IS_LOADING_NOW;
+  isLoading: boolean;
+};
+
+export const isLoadingNow = (isLoading: boolean): isLoadingNowType => ({
   type: IS_LOADING_NOW,
   isLoading,
 });
 
-export const followingInProcess = (isLoading, userId) => ({
+type followingInProcessType = {
+  type: typeof IS_FOLLOWING_NOW;
+  isLoading: boolean;
+  userId: number;
+};
+
+export const followingInProcess = (isLoading: boolean, userId: number): followingInProcessType => ({
   type: IS_FOLLOWING_NOW,
   isLoading,
   userId,
 });
 
-export const requestUsers = (selectedPage, pageSize) => async (dispatch) => {
+export const requestUsers = (selectedPage: number, pageSize: number) => async (dispatch: any) => {
   dispatch(isLoadingNow(true));
 
   const data = await userAPI.getUsers(selectedPage, pageSize);
@@ -119,7 +153,7 @@ export const requestUsers = (selectedPage, pageSize) => async (dispatch) => {
   dispatch(setTotalCount(data.totalCount));
 };
 
-export const follow = (userId) => async (dispatch) => {
+export const follow = (userId: number) => async (dispatch: any) => {
   dispatch(followingInProcess(true, userId));
 
   const response = await userAPI.follow(userId);
@@ -130,7 +164,7 @@ export const follow = (userId) => async (dispatch) => {
   dispatch(followingInProcess(false, userId));
 };
 
-export const unfollow = (userId) => async (dispatch) => {
+export const unfollow = (userId: number) => async (dispatch: any) => {
   dispatch(followingInProcess(true, userId));
 
   const response = await userAPI.unfollow(userId);

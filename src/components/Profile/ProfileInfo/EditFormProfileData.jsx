@@ -4,10 +4,10 @@ import { required } from '../../../utils/validators/validator';
 import { Input, Textarea } from './../../common/FormControl/FormControl';
 
 const EditFormProfileData = (props) => {
-  const { contacts, userId } = props.profile;
+  const { contacts } = props.profile;
 
   const sendInformation = async (e) => {
-    const response = await props.setUserProfileInformation(e, userId);
+    const response = await props.setUserProfileInformation(e);
     if (response) return response;
     props.changeMode();
   };

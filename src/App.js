@@ -13,7 +13,7 @@ import HeaderContainer from './components/Header/HeaderContainer';
 const UsersContainer = React.lazy(() => import('./components/Users/UsersContainer'));
 const DialogsContainer = React.lazy(() => import('./components/Dialogs/DialogsContainer'));
 const ProfileContainer = React.lazy(() => import('./components/Profile/ProfileContainer'));
-const NotFoundPage = React.lazy(() => import('./components/Pages/NotFoundPage.jsx'));
+const NotFoundPage = React.lazy(() => import('./components/Pages/NotFoundPage'));
 
 class App extends React.Component {
   componentDidMount() {

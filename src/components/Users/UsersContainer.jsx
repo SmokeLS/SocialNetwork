@@ -9,10 +9,10 @@ import {
   follow,
   unfollow,
 } from '../../redux/users-reducer';
-import Users from './Users.jsx';
+import Users from './Users';
 import { connect } from 'react-redux';
-import Preloader from '../common/Preloader/Preloader.js';
-import { userAPI } from '../../api/api.js';
+import Preloader from '../common/Preloader/Preloader';
+import { userAPI } from '../../api/api';
 import { compose } from 'redux';
 import {
   getUsers,
