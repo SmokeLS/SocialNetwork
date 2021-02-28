@@ -1,6 +1,8 @@
-import { profileAPI } from '../api/api';
+import { profileAPI, ResponseCodeType } from '../api/api';
 import { FORM_ERROR } from 'final-form';
 import { PhotosType, PostType, ProfileType } from '../types/types';
+import { ActionsType, AppStateType, ThunkActionType } from './redux-store';
+import { ThunkAction } from 'redux-thunk';
 
 const ADD_POST = 'profile/ADD-POST';
 const SET_USERS_PROFILE = 'profile/SET_USERS_PROFILE';
@@ -38,12 +40,13 @@ const initialState = {
   userId: null as number | null,
   editProfileMode: false,
   status: '',
+  newPostText: '',
 };
 
-const profileReducer = (state = initialState, action: any): InitialStateType => {
+const profileReducer = (state = initialState, action: ActionsType<typeof actions>): InitialStateType => {
   switch (action.type) {
     case ADD_POST: {
-      const newPost = {
+      const newPost: PostType = {
         id: state.posts.length + 1,
         message: action.newMessageBody,
         likesCount: 0,
@@ -89,97 +92,61 @@ const profileReducer = (state = initialState, action: any): InitialStateType => 
   }
 };
 
-type DeletePostType = {
-  type: typeof DELETE_POST;
-  postId: number;
+export const actions = {
+  deletePost: (postId: number) => ({ type: DELETE_POST, postId } as const),
+  addPost: (newMessageBody: string) => ({ type: ADD_POST, newMessageBody } as const),
+  setUsersProfile: (profile: ProfileType) => ({ type: SET_USERS_PROFILE, profile } as const),
+  setUserAvatar: (photos: PhotosType) => ({ type: PHOTO_IS_SETTED, photos } as const),
+  setStatus: (status: string) => ({ type: SET_STATUS, status } as const),
+  changeMode: () => ({ type: CHANGE_PROFILE_MODE } as const),
 };
 
-export const deletePost = (postId: number): DeletePostType => ({
-  type: DELETE_POST,
-  postId,
-});
+type ThunkType = ThunkActionType<ActionsType<typeof actions>>;
 
-type AddPostType = {
-  type: typeof ADD_POST;
-  newMessageBody: string;
+export const getUsersProfile = (userId: number): ThunkType => async (dispatch) => {
+  const data = await profileAPI.getProfile(userId);
+  dispatch(actions.setUsersProfile(data));
 };
 
-export const addPost = (newMessageBody: string): AddPostType => ({
-  type: ADD_POST,
-  newMessageBody,
-});
-
-type SetUsersProfileType = {
-  type: typeof SET_USERS_PROFILE;
-  profile: ProfileType;
+export const getUserStatus = (userId: number): ThunkType => async (dispatch) => {
+  const data = await profileAPI.getStatus(userId);
+  dispatch(actions.setStatus(data));
 };
 
-const setUsersProfile = (profile: ProfileType): SetUsersProfileType => ({
-  type: SET_USERS_PROFILE,
-  profile,
-});
-
-type SetUserAvatarType = {
-  type: typeof PHOTO_IS_SETTED;
-  photos: PhotosType;
-};
-
-export const setUserAvatar = (photos: PhotosType): SetUserAvatarType => ({
-  type: PHOTO_IS_SETTED,
-  photos,
-});
-
-type SetStatusType = {
-  type: typeof SET_STATUS;
-  status: string;
-};
-
-const setStatus = (status: string): SetStatusType => ({
-  type: SET_STATUS,
-  status,
-});
-
-type ChangeModeType = {
-  type: typeof CHANGE_PROFILE_MODE;
-};
-
-export const changeMode = (): ChangeModeType => ({
-  type: CHANGE_PROFILE_MODE,
-});
-
-export const getUsersProfile = (userId: number) => async (dispatch: any) => {
-  const response = await profileAPI.getProfile(userId);
-  dispatch(setUsersProfile(response.data));
-};
-
-export const getUserStatus = (userId: number) => async (dispatch: any) => {
-  const response = await profileAPI.getStatus(userId);
-  dispatch(setStatus(response.data));
-};
-
-export const setUserStatus = (status: string) => async (dispatch: any) => {
-  const response = await profileAPI.setStatus(status);
-  if (response.data.resultCode === 0) {
-    dispatch(setStatus(status));
+export const setUserStatus = (status: string): ThunkType => async (dispatch) => {
+  const data = await profileAPI.setStatus(status);
+  if (data.resultCode === ResponseCodeType.Success) {
+    dispatch(actions.setStatus(status));
   }
 };
 
-export const setAvatar = (photo: any) => async (dispatch: any) => {
-  const response = await profileAPI.setUserAvatar(photo);
+export const setAvatar = (photo: File): ThunkType => async (dispatch) => {
+  const data = await profileAPI.setUserAvatar(photo);
 
-  if (response.data.resultCode === 0) {
-    dispatch(setUserAvatar(response.data.data.photos));
+  if (data.resultCode === ResponseCodeType.Success) {
+    dispatch(actions.setUserAvatar(data.data));
   }
 };
 
-export const setUserProfileInformation = (information: ProfileType) => async (dispatch: any, getState: any) => {
-  const userId = getState().auth.userId;
-  const response = await profileAPI.setUserProfileInformation(information);
+export const setUserProfileInformation = (
+  information: ProfileType,
+): ThunkAction<
+  Promise<{ [FORM_ERROR]: Array<string> } | undefined>,
+  AppStateType,
+  unknown,
+  ActionsType<typeof actions>
+> => async (dispatch, getState) => {
+  const userId = getState().auth.id;
+  const data = await profileAPI.setUserProfileInformation(information);
 
-  if (response.data.resultCode === 0) {
-    dispatch(getUsersProfile(userId));
+  if (data.resultCode === ResponseCodeType.Success) {
+    if (userId !== null) {
+      dispatch(getUsersProfile(userId));
+    } else {
+      throw new Error('userId should not to be number!');
+    }
   } else {
-    return { [FORM_ERROR]: response.data.messages };
+    return { [FORM_ERROR]: data.messages };
   }
 };
 

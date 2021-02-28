@@ -1,6 +1,6 @@
 import React from 'react';
 
-const NotFoundPage = (props) => {
+const NotFoundPage = () => {
   return <div>404</div>;
 };
 

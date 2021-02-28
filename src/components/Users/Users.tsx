@@ -2,11 +2,23 @@ import React, { useState } from 'react';
 import s from './Users.module.css';
 import userPhoto from '../../assets/user.png';
 import { NavLink } from 'react-router-dom';
+import { UserType } from '../../types/types';
 
-const User = (props) => {
+type PropsType = {
+  selectedPage: number,
+  users: Array<UserType>;
+  followingQuery: Array<number>;
+  unfollow: (userId: number) => void;
+  follow: (userId: number) => void;
+  selectPage: (portion: number) => void;
+  totalPages: number;
+  pageSize: number;
+}
+
+const User : React.FC<PropsType>= (props) => {
   const { selectedPage, users, followingQuery, unfollow, follow, selectPage, totalPages, pageSize } = props;
 
-  const pages = [];
+  const pages : Array<number> = [];
 
   for (let i = 0; i < totalPages; i++) {
     pages.push(i + 1);
@@ -58,7 +70,7 @@ const User = (props) => {
           ''
         )}
       </div>
-      {users.map((user) => {
+      {users.map((user: UserType) => {
         return (
           <div key={user.id}>
             <NavLink to={`/profile/` + user.id}>

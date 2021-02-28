@@ -1,8 +1,21 @@
 import React from 'react';
 import ProfileInfo from './ProfileInfo/ProfileInfo';
 import MyPostsContainer from './MyPosts/MyPostsContainer';
+import { ProfileType } from '../../types/types';
 
-const Profile = (props) => {
+type PropsType = {
+  profile: ProfileType | null;
+  status: string;
+  setUserStatus: () => void;
+  isOwner: boolean;
+  setAvatar: () => void;
+  changeMode:() => void;
+  editProfileMode: boolean;
+  setUserProfileInformation: () => void;
+  userId: number | null;
+}
+
+const Profile : React.FC<PropsType> = (props) => {
   const {
     profile,
     status,
@@ -12,7 +25,6 @@ const Profile = (props) => {
     changeMode,
     editProfileMode,
     setUserProfileInformation,
-    userId,
   } = props;
 
   return (
@@ -26,7 +38,6 @@ const Profile = (props) => {
         changeMode={changeMode}
         editProfileMode={editProfileMode}
         setUserProfileInformation={setUserProfileInformation}
-        userId={userId}
       />
       <MyPostsContainer profile={profile} />
     </div>

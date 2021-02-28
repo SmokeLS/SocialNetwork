@@ -1,4 +1,6 @@
+import { ThunkAction } from 'redux-thunk';
 import { getMyProfile } from './auth-reducer';
+import { ActionsType, AppStateType } from './redux-store';
 
 const SET_INITIALIZED_SETTINGS = 'app/SET_INITIALIZED_SETTINGS';
 
@@ -8,7 +10,7 @@ const initialState = {
   initialized: false,
 };
 
-const appReducer = (state = initialState, action: any): InitialStateType => {
+const appReducer = (state = initialState, action: ActionsType<typeof actions>): InitialStateType => {
   switch (action.type) {
     case SET_INITIALIZED_SETTINGS: {
       return {
@@ -21,18 +23,16 @@ const appReducer = (state = initialState, action: any): InitialStateType => {
   }
 };
 
-type InitializedSettingActionType = {
-  type: typeof SET_INITIALIZED_SETTINGS;
+const actions = {
+  initializedSettings: () => ({ type: SET_INITIALIZED_SETTINGS } as const),
 };
 
-const initializedSettings = (): InitializedSettingActionType => ({
-  type: SET_INITIALIZED_SETTINGS,
-});
-
-export const setInitializedSettings = () => (dispatch: any) => {
+export const setInitializedSettings = (): ThunkAction<void, AppStateType, unknown, ActionsType<typeof actions>> => (
+  dispatch,
+) => {
   const promise = dispatch(getMyProfile());
   promise.then(() => {
-    dispatch(initializedSettings());
+    dispatch(actions.initializedSettings());
   });
 };
 

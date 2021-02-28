@@ -1,25 +1,38 @@
 import React from 'react';
-import { Field, Form } from 'react-final-form';
+import { Field, withTypes } from 'react-final-form';
+import { PostType } from '../../../types/types';
 import { required } from '../../../utils/validators/validator';
 import { Textarea } from '../../common/FormControl/FormControl';
 import s from './MyPosts.module.css';
 import Post from './Post/Post';
 
-const MyPosts = (props) => {
+type FinalFormType = {
+  newMessageBody: string;
+}
+
+type PropsType = {
+  posts: Array<PostType>
+  addPost: (newMessageBody: string) => void;
+  newPostText: string;
+}
+
+const MyPosts : React.FC<PropsType> = (props) => {
   const { posts, addPost, newPostText } = props;
 
   let postsElements = posts.map((p, index) => <Post message={p.message} likesCount={p.likesCount} key={index} />);
 
-  const onSendMessageClick = (values) => {
+  const onSendMessageClick = (values: FinalFormType) => {
     addPost(values.newMessageBody);
   };
+
+  const {Form}= withTypes<FinalFormType>();
 
   return (
     <div className={s.postsBlock}>
       <h3>My posts</h3>
       <div>
         <Form
-          onSubmit={(e) => onSendMessageClick(e)}
+          onSubmit={(values: FinalFormType) => onSendMessageClick(values)}
           render={({ handleSubmit }) => (
             <form onSubmit={handleSubmit}>
               <div>
@@ -28,7 +41,7 @@ const MyPosts = (props) => {
                     <div>
                       <Textarea {...props} />
                       <div>
-                        <button onSubmit={onSendMessageClick}>Add post</button>
+                        <button>Add post</button>
                       </div>
                     </div>
                   )}

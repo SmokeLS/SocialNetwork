@@ -1,5 +1,7 @@
-import { userAPI } from '../api/api';
+import { Dispatch } from 'redux';
+import { ResponseCodeType, userAPI } from '../api/api';
 import { UserType } from '../types/types';
+import { ActionsType, ThunkActionType } from './redux-store';
 
 const FOLLOW_TOGGLE = 'user/FOLLOW_TOGGLE';
 const SET_USERS = 'user/SET_USERS';
@@ -19,7 +21,7 @@ const initialState = {
 
 type InitialStateType = typeof initialState;
 
-const usersReducer = (state = initialState, action: any): InitialStateType => {
+const usersReducer = (state = initialState, action: ActionsType<typeof actions>): InitialStateType => {
   switch (action.type) {
     case FOLLOW_TOGGLE: {
       return {
@@ -82,97 +84,69 @@ const usersReducer = (state = initialState, action: any): InitialStateType => {
   }
 };
 
-type FollowToggleType = {
-  type: typeof FOLLOW_TOGGLE;
-  id: number;
+export const actions = {
+  followToggle: (id: number) =>
+    ({
+      type: FOLLOW_TOGGLE,
+      id,
+    } as const),
+  setUsers: (users: Array<UserType>) =>
+    ({
+      type: SET_USERS,
+      users,
+    } as const),
+  setTotalCount: (totalCount: number) =>
+    ({
+      type: SET_TOTAL_COUNT,
+      totalCount,
+    } as const),
+  setSelectedPage: (selectedPage: number) =>
+    ({
+      type: SET_SELECTED_PAGE,
+      selectedPage,
+    } as const),
+  isLoadingNow: (isLoading: boolean) =>
+    ({
+      type: IS_LOADING_NOW,
+      isLoading,
+    } as const),
+  followingInProcess: (isLoading: boolean, userId: number) =>
+    ({
+      type: IS_FOLLOWING_NOW,
+      isLoading,
+      userId,
+    } as const),
 };
 
-export const followToggle = (id: number): FollowToggleType => ({
-  type: FOLLOW_TOGGLE,
-  id,
-});
+type DispatchType = Dispatch<ActionsType<typeof actions>>;
+type ThunkType = ThunkActionType<ActionsType<typeof actions>>;
 
-type SetUsersType = {
-  type: typeof SET_USERS;
-  users: Array<UserType>;
-};
-
-export const setUsers = (users: Array<UserType>): SetUsersType => ({
-  type: SET_USERS,
-  users,
-});
-
-type SetTotalCountType = {
-  type: typeof SET_TOTAL_COUNT;
-  totalCount: number;
-};
-
-export const setTotalCount = (totalCount: number): SetTotalCountType => ({
-  type: SET_TOTAL_COUNT,
-  totalCount,
-});
-
-type setSelectedPageType = {
-  type: typeof SET_SELECTED_PAGE;
-  selectedPage: number;
-};
-
-export const setSelectedPage = (selectedPage: number): setSelectedPageType => ({
-  type: SET_SELECTED_PAGE,
-  selectedPage,
-});
-
-type isLoadingNowType = {
-  type: typeof IS_LOADING_NOW;
-  isLoading: boolean;
-};
-
-export const isLoadingNow = (isLoading: boolean): isLoadingNowType => ({
-  type: IS_LOADING_NOW,
-  isLoading,
-});
-
-type followingInProcessType = {
-  type: typeof IS_FOLLOWING_NOW;
-  isLoading: boolean;
-  userId: number;
-};
-
-export const followingInProcess = (isLoading: boolean, userId: number): followingInProcessType => ({
-  type: IS_FOLLOWING_NOW,
-  isLoading,
-  userId,
-});
-
-export const requestUsers = (selectedPage: number, pageSize: number) => async (dispatch: any) => {
-  dispatch(isLoadingNow(true));
+export const requestUsers = (selectedPage: number, pageSize: number): ThunkType => async (dispatch) => {
+  dispatch(actions.isLoadingNow(true));
 
   const data = await userAPI.getUsers(selectedPage, pageSize);
-  dispatch(setUsers(data.items));
-  dispatch(isLoadingNow(false));
-  dispatch(setTotalCount(data.totalCount));
+  dispatch(actions.setUsers(data.items));
+  dispatch(actions.isLoadingNow(false));
+  dispatch(actions.setTotalCount(data.totalCount));
 };
 
-export const follow = (userId: number) => async (dispatch: any) => {
-  dispatch(followingInProcess(true, userId));
+const _followUnfollowFlow = async (userId: number, dispatch: DispatchType, userAPI: any) => {
+  dispatch(actions.followingInProcess(true, userId));
 
-  const response = await userAPI.follow(userId);
-  if (response.data.resultCode === 0) {
-    dispatch(followToggle(userId));
+  const data = await userAPI(userId);
+  if (data.resultCode === ResponseCodeType.Success) {
+    dispatch(actions.followToggle(userId));
   }
 
-  dispatch(followingInProcess(false, userId));
+  dispatch(actions.followingInProcess(false, userId));
 };
 
-export const unfollow = (userId: number) => async (dispatch: any) => {
-  dispatch(followingInProcess(true, userId));
+export const follow = (userId: number): ThunkType => async (dispatch) => {
+  _followUnfollowFlow(userId, dispatch, userAPI.follow.bind(userAPI));
+};
 
-  const response = await userAPI.unfollow(userId);
-  if (response.data.resultCode === 0) {
-    dispatch(followToggle(userId));
-  }
-
-  dispatch(followingInProcess(false, userId));
+export const unfollow = (userId: number): ThunkType => async (dispatch) => {
+  _followUnfollowFlow(userId, dispatch, userAPI.unfollow.bind(userAPI));
 };
 
 export default usersReducer;

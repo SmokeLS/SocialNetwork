@@ -4,15 +4,43 @@ import {
   getUserStatus,
   setUserStatus,
   setAvatar,
-  changeMode,
+  actions,
   setUserProfileInformation,
 } from '../../redux/profile-reducer';
 import Profile from './Profile';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+import { ProfileType } from '../../types/types';
+import { AppStateType } from '../../redux/redux-store';
 
-class ProfileContainer extends React.Component {
+type MapStatePropsType = {
+  profile: ProfileType | null;
+  status: string,
+  userId: number| null,
+  editProfileMode: boolean,
+}
+
+type MapDispatchPropsType = {
+  getUsersProfile: (userId: number) => void;
+  getUserStatus: (userId: number) => void;
+  setUserStatus: () => void;
+  setAvatar: () => void;
+  changeMode: () => void;
+  setUserProfileInformation: () => void;
+}
+
+type OwnPropsType = {
+  userId?: string
+}
+
+type WithRouterType = RouteComponentProps<OwnPropsType> & {
+ userId?: string
+}
+
+type PropsType = MapStatePropsType & MapDispatchPropsType & WithRouterType;
+
+class ProfileContainer extends React.Component<PropsType>{
   refreshProfile() {
     const { getUsersProfile, getUserStatus, history } = this.props;
 
@@ -24,15 +52,18 @@ class ProfileContainer extends React.Component {
         return;
       }
     }
-    getUsersProfile(userId);
-    getUserStatus(userId);
+
+    const numUserId : number = Number(userId);
+
+    getUsersProfile(numUserId);
+    getUserStatus(numUserId);
   }
 
   componentDidMount() {
     this.refreshProfile();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: PropsType) {
     if (this.props.match.params.userId !== prevProps.match.params.userId) {
       this.refreshProfile();
     }
@@ -45,7 +76,7 @@ class ProfileContainer extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: AppStateType) : MapStatePropsType => {
   return {
     profile: state.profilePage.profile,
     status: state.profilePage.status,
@@ -53,6 +84,8 @@ const mapStateToProps = (state) => {
     editProfileMode: state.profilePage.editProfileMode,
   };
 };
+
+const changeMode = actions.changeMode;
 
 export default compose(
   connect(mapStateToProps, {

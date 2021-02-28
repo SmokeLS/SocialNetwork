@@ -17,7 +17,7 @@ export type ContactsType = {
 
 export type PhotosType = {
   small: string | null;
-  big: string | null;
+  large: string | null;
 };
 
 export type ProfileType = {
@@ -27,6 +27,7 @@ export type ProfileType = {
   fullName: string;
   contacts: ContactsType;
   photos: PhotosType;
+  aboutMe: string;
 };
 
 export type UserType = {

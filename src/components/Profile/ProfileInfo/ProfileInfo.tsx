@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import s from './ProfileInfo.module.css';
 import Preloader from '../../common/Preloader/Preloader';
 import userPhoto from '../../../assets/user.png';
 import ProfileStatus from './ProfileStatus';
 import FormProfileData from './FormProfileData';
 import EditFormProfileData from './EditFormProfileData';
+import { ProfileType } from '../../../types/types';
 
-const ProfileInfo = (props) => {
+type PropsType = {
+  profile: ProfileType | null;
+  setUserStatus: () => void;
+  status: string;
+  isOwner: boolean;
+  setAvatar: (file: File | null) => void;
+  changeMode: () => void;
+  editProfileMode: boolean;
+  setUserProfileInformation: () => void;
+}
+
+const ProfileInfo : React.FC<PropsType> = (props) => {
   const {
     profile,
     setUserStatus,
@@ -18,11 +30,12 @@ const ProfileInfo = (props) => {
     setUserProfileInformation,
   } = props;
 
-  if (!props.profile) {
+  if (!profile) {
     return <Preloader />;
   }
 
-  const setNewAvatar = (e) => {
+  const setNewAvatar = (e : ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return null;
     if (e.target.files.length) {
       setAvatar(e.target.files[0]);
     }

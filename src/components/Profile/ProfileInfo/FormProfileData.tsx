@@ -1,6 +1,13 @@
 import React from 'react';
+import { ProfileType } from '../../../types/types';
 
-const FormProfileData = (props) => {
+type PropsType = {
+  profile: ProfileType;
+  isOwner: boolean;
+  changeMode: () => void;
+}
+
+const FormProfileData : React.FC<PropsType> = (props) => {
   const { aboutMe, contacts, lookingForAJob, lookingForAJobDescription, fullName } = props.profile;
 
   return (
@@ -11,12 +18,9 @@ const FormProfileData = (props) => {
       <div>Looking for a job: {lookingForAJob ? 'Yes' : 'No'}</div>
       <div>Looking for a job description: {lookingForAJobDescription} </div>
       <div>
-        {Object.keys(contacts).map((key) => {
-          return (
-            <div key={key}>
-              {key} : {contacts[key]}
-            </div>
-          );
+        {Object.keys(contacts).map((key)  => {
+          //@ts-ignore
+          return (<div key={key}> {key} : {contacts[key]} </div>);
         })}
       </div>
     </div>

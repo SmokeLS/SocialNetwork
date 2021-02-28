@@ -1,4 +1,6 @@
-import { authAPI, securityAPI } from '../api/api';
+import { ThunkAction } from 'redux-thunk';
+import { authAPI, ResponseCodeType, ResponseCodeWithCaptchaType, securityAPI } from '../api/api';
+import { ActionsType, AppStateType, ThunkActionType } from './redux-store';
 
 const SET_USERS_DATA = 'auth/SET_USERS_DATA';
 const DISPLAY_ERROR = 'auth/DISPLAY_ERROR';
@@ -9,13 +11,13 @@ const initialState = {
   login: null as string | null,
   email: null as string | null,
   isAuth: false,
-  error: null,
-  captchaUrl: null as number | null,
+  error: null as any,
+  captchaUrl: null as string | null,
 };
 
 type InitialStateType = typeof initialState;
 
-const authReducer = (state = initialState, action: any): InitialStateType => {
+const authReducer = (state = initialState, action: ActionsType<typeof actions>): InitialStateType => {
   switch (action.type) {
     case SET_USERS_DATA:
     case DISPLAY_CAPTCHA: {
@@ -35,15 +37,35 @@ const authReducer = (state = initialState, action: any): InitialStateType => {
   }
 };
 
-type DisplayErrorType = {
-  type: typeof DISPLAY_ERROR;
-  error: any;
+const actions = {
+  displayError: (error: any) =>
+    ({
+      type: DISPLAY_ERROR,
+      error,
+    } as const),
+  setAuthUsersData: (
+    id: number | null,
+    login: string | null,
+    email: string | null,
+    isAuth: boolean,
+    error: any | null,
+  ): SetAuthUsersDataActionType =>
+    ({
+      type: SET_USERS_DATA,
+      data: {
+        id,
+        login,
+        email,
+        isAuth,
+        error,
+      },
+    } as const),
+  displayCaptcha: (captchaUrl: string) =>
+    ({
+      type: DISPLAY_CAPTCHA,
+      data: { captchaUrl },
+    } as const),
 };
-
-const displayError = (error: any): DisplayErrorType => ({
-  type: DISPLAY_ERROR,
-  error,
-});
 
 type DataType = {
   id: number | null;
@@ -58,70 +80,50 @@ type SetAuthUsersDataActionType = {
   data: DataType;
 };
 
-const setAuthUsersData = (
-  id: number | null,
-  login: string | null,
-  email: string | null,
-  isAuth: boolean,
-  error: any | null,
-): SetAuthUsersDataActionType => ({
-  type: SET_USERS_DATA,
-  data: {
-    id,
-    login,
-    email,
-    isAuth,
-    error,
-  },
-});
+type ThunkType = ThunkActionType<ActionsType<typeof actions>>;
 
-type DisplayCaptchaType = {
-  type: typeof DISPLAY_CAPTCHA;
-  data: { captchaUrl: string };
-};
+export const getMyProfile = (): ThunkAction<any, AppStateType, unknown, ActionsType<typeof actions>> => async (
+  dispatch,
+) => {
+  const data = await authAPI.getMyProfile();
 
-const displayCaptcha = (captchaUrl: string): DisplayCaptchaType => ({
-  type: DISPLAY_CAPTCHA,
-  data: { captchaUrl },
-});
-
-export const getMyProfile = () => async (dispatch: any) => {
-  const response = await authAPI.getMyProfile();
-
-  if (response.data.resultCode === 0) {
-    const { id, login, email } = response.data.data;
-    dispatch(setAuthUsersData(id, login, email, true, ''));
+  if (data.resultCode === ResponseCodeType.Success) {
+    const { id, login, email } = data.data;
+    dispatch(actions.setAuthUsersData(id, login, email, true, ''));
   }
 };
 
-export const signIn = (login: string, password: string, rememberMe: boolean, captchaUrl: string) => async (
-  dispatch: any,
-) => {
-  const response = await authAPI.login(login, password, rememberMe, captchaUrl);
+export const signIn = (
+  login: string,
+  password: string,
+  rememberMe: boolean,
+  captchaUrl: string | null,
+): ThunkType => async (dispatch) => {
+  const data = await authAPI.login(login, password, rememberMe, captchaUrl);
 
-  if (response.data.resultCode === 0) {
+  if (data.resultCode === ResponseCodeType.Success) {
     dispatch(getMyProfile());
   } else {
-    if (response.data.resultCode === 10) {
+    if (data.resultCode === ResponseCodeWithCaptchaType.CaptchaIsRequired) {
       dispatch(onDisplayCaptcha());
     }
-    dispatch(displayError('Login or password is incorrect'));
+    dispatch(actions.displayError('Login or password is incorrect'));
   }
 };
 
-export const onExit = () => async (dispatch: any) => {
-  const response = await authAPI.logout();
+export const onExit = (): ThunkType => async (dispatch) => {
+  const data = await authAPI.logout();
 
-  if (response.data.resultCode === 0) {
-    dispatch(setAuthUsersData(null, null, null, false, ''));
+  if (data.resultCode === ResponseCodeType.Success) {
+    dispatch(actions.setAuthUsersData(null, null, null, false, ''));
   }
 };
 
-export const onDisplayCaptcha = () => async (dispatch: any) => {
-  const response = await securityAPI.getCaptcha();
+export const onDisplayCaptcha = (): ThunkType => async (dispatch) => {
+  const data = await securityAPI.getCaptcha();
 
-  if (response.data.url) {
-    dispatch(displayCaptcha(response.data.url));
+  if (data.url) {
+    dispatch(actions.displayCaptcha(data.url));
   }
 };
 

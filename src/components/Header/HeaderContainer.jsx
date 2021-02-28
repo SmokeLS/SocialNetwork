@@ -1,5 +1,5 @@
 import React from 'react';
-import Header from './Header.jsx';
+import Header from './Header';
 import { getMyProfile } from '../../redux/auth-reducer';
 import { connect } from 'react-redux';
 import { onExit } from './../../redux/auth-reducer';

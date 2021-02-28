@@ -1,22 +1,35 @@
 import React from 'react';
-import { Form, Field } from 'react-final-form';
-import { required } from '../../../utils/validators/validator';
-import { Input, Textarea } from './../../common/FormControl/FormControl';
+import {  Field, withTypes } from 'react-final-form';
+import { ProfileType } from '../../../types/types';
+import { Input, Textarea } from '../../common/FormControl/FormControl';
 
-const EditFormProfileData = (props) => {
+type FinalFormType = {
+  profile: ProfileType | null;
+}
+
+type PropsType = {
+  profile: ProfileType | null;
+  setUserProfileInformation: (e: Object) => void;
+  changeMode: () => void;
+  isOwner: boolean;
+}
+
+const EditFormProfileData : React.FC<PropsType> = (props) => {
+  if(!props.profile) return null;
   const { contacts } = props.profile;
-
-  const sendInformation = async (e) => {
-    const response = await props.setUserProfileInformation(e);
+  
+  const sendInformation = async (e: FinalFormType) => {
+    const response : any = await props.setUserProfileInformation(e);
     if (response) return response;
     props.changeMode();
   };
 
+  const {Form} = withTypes<FinalFormType, ProfileType>();
+
   return (
     <Form
       initialValues={props.profile}
-      onSubmit={(e) => sendInformation(e)}
-      validate={required}
+      onSubmit={(values:FinalFormType) => sendInformation(values)}
       render={({ submitError, submitting, handleSubmit }) => (
         <form onSubmit={handleSubmit}>
           <div>{props.isOwner && <button disabled={submitting}>Accept</button>}</div>
@@ -67,7 +80,7 @@ const EditFormProfileData = (props) => {
           })}
           {submitError && (
             <div className="error">
-              {submitError.map((error) => (
+              {submitError.map((error : any) => (
                 <div>{error}</div>
               ))}
             </div>
