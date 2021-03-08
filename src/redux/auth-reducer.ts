@@ -80,7 +80,7 @@ type SetAuthUsersDataActionType = {
   data: DataType;
 };
 
-type ThunkType = ThunkActionType<ActionsType<typeof actions>>;
+export type ThunkType = ThunkActionType<ActionsType<typeof actions>>;
 
 export const getMyProfile = (): ThunkAction<any, AppStateType, unknown, ActionsType<typeof actions>> => async (
   dispatch,

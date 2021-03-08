@@ -36,11 +36,12 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@types/react-redux": "^7.1.16",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
     "eslint": "^7.20.0",
     "prettier": "^2.2.1",
     "react-test-renderer": "^16.14.0",
-    "typescript": "^4.1.5"
+    "typescript": "^4.2.3"
   }
 }

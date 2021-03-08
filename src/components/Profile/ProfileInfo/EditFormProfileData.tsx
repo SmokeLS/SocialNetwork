@@ -1,15 +1,16 @@
 import React from 'react';
 import {  Field, withTypes } from 'react-final-form';
+import { SetUserThunkType } from '../../../redux/profile-reducer';
 import { ProfileType } from '../../../types/types';
 import { Input, Textarea } from '../../common/FormControl/FormControl';
 
 type FinalFormType = {
-  profile: ProfileType | null;
+  profile: ProfileType;
 }
 
 type PropsType = {
   profile: ProfileType | null;
-  setUserProfileInformation: (e: Object) => void;
+  setUserProfileInformation: (information: ProfileType) => SetUserThunkType;
   changeMode: () => void;
   isOwner: boolean;
 }
@@ -19,13 +20,12 @@ const EditFormProfileData : React.FC<PropsType> = (props) => {
   const { contacts } = props.profile;
   
   const sendInformation = async (e: FinalFormType) => {
-    const response : any = await props.setUserProfileInformation(e);
+    const response : any = await props.setUserProfileInformation(e.profile);
     if (response) return response;
     props.changeMode();
   };
 
   const {Form} = withTypes<FinalFormType, ProfileType>();
-
   return (
     <Form
       initialValues={props.profile}

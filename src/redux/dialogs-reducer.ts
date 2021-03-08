@@ -6,12 +6,12 @@ type DialogType = {
   name: string;
 };
 
-type MessageType = {
+export type MessageType = {
   id: number;
   message: string;
 };
 
-type InitialStateType = typeof initialState;
+export type InitialStateType = typeof initialState;
 
 const initialState = {
   dialogs: [
@@ -51,7 +51,7 @@ const dialogsReducer = (state = initialState, action: ActionsType<typeof actions
 };
 
 export const actions = {
-  sendMessageCreator: (newMessageBody: string) => ({ type: SEND_MESSAGE, newMessageBody }),
+  sendMessage: (newMessageBody: string) => ({ type: SEND_MESSAGE, newMessageBody }),
 };
 
 export default dialogsReducer;

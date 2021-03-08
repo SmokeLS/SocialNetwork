@@ -18,9 +18,12 @@ const FormProfileData : React.FC<PropsType> = (props) => {
       <div>Looking for a job: {lookingForAJob ? 'Yes' : 'No'}</div>
       <div>Looking for a job description: {lookingForAJobDescription} </div>
       <div>
-        {Object.keys(contacts).map((key)  => {
-          //@ts-ignore
-          return (<div key={key}> {key} : {contacts[key]} </div>);
+        {(Object.keys(contacts) as Array<keyof typeof contacts>).map((key)  => {
+          return (
+            <div key={key}>
+              {key} : {contacts[key]}
+            </div>
+          );
         })}
       </div>
     </div>

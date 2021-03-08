@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 
 type PropsType = {
   status: string;
-  setUserStatus: (status: string)=> void;
+  setUserStatus: (status: string) => void;
 }
 
 const ProfileStatus : React.FC<PropsType> = (props) => {

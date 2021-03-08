@@ -1,5 +1,7 @@
 import React from 'react';
 import {
+  SetUserThunkType,
+  ThunkType,
   getUsersProfile,
   getUserStatus,
   setUserStatus,
@@ -22,12 +24,12 @@ type MapStatePropsType = {
 }
 
 type MapDispatchPropsType = {
-  getUsersProfile: (userId: number) => void;
-  getUserStatus: (userId: number) => void;
-  setUserStatus: () => void;
-  setAvatar: () => void;
+  getUsersProfile: (userId: number) => ThunkType;
+  getUserStatus: (userId: number) => ThunkType;
+  setUserStatus: (status: string) => ThunkType;
+  setAvatar: (file: File| null) => ThunkType;
   changeMode: () => void;
-  setUserProfileInformation: () => void;
+  setUserProfileInformation: (information: ProfileType) => SetUserThunkType;
 }
 
 type OwnPropsType = {
@@ -88,7 +90,7 @@ const mapStateToProps = (state: AppStateType) : MapStatePropsType => {
 const changeMode = actions.changeMode;
 
 export default compose(
-  connect(mapStateToProps, {
+  connect<MapStatePropsType, MapDispatchPropsType,OwnPropsType,AppStateType>(mapStateToProps, {
     getUsersProfile,
     getUserStatus,
     setUserStatus,

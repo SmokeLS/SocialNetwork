@@ -101,7 +101,7 @@ export const actions = {
   changeMode: () => ({ type: CHANGE_PROFILE_MODE } as const),
 };
 
-type ThunkType = ThunkActionType<ActionsType<typeof actions>>;
+export type ThunkType = ThunkActionType<ActionsType<typeof actions>>;
 
 export const getUsersProfile = (userId: number): ThunkType => async (dispatch) => {
   const data = await profileAPI.getProfile(userId);
@@ -120,22 +120,21 @@ export const setUserStatus = (status: string): ThunkType => async (dispatch) => 
   }
 };
 
-export const setAvatar = (photo: File): ThunkType => async (dispatch) => {
+export const setAvatar = (photo: File| null): ThunkType => async (dispatch) => {
+  if (photo) {
   const data = await profileAPI.setUserAvatar(photo);
 
   if (data.resultCode === ResponseCodeType.Success) {
     dispatch(actions.setUserAvatar(data.data));
   }
+  }
 };
+
+export type SetUserThunkType = ThunkAction<Promise<{ [FORM_ERROR]: Array<string> } | undefined>,AppStateType,unknown,ActionsType<typeof actions>>
 
 export const setUserProfileInformation = (
   information: ProfileType,
-): ThunkAction<
-  Promise<{ [FORM_ERROR]: Array<string> } | undefined>,
-  AppStateType,
-  unknown,
-  ActionsType<typeof actions>
-> => async (dispatch, getState) => {
+): SetUserThunkType => async (dispatch, getState) => {
   const userId = getState().auth.id;
   const data = await profileAPI.setUserProfileInformation(information);
 

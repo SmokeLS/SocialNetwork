@@ -2,16 +2,17 @@ import React from 'react';
 import ProfileInfo from './ProfileInfo/ProfileInfo';
 import MyPostsContainer from './MyPosts/MyPostsContainer';
 import { ProfileType } from '../../types/types';
+import { SetUserThunkType, ThunkType } from '../../redux/profile-reducer';
 
 type PropsType = {
   profile: ProfileType | null;
   status: string;
-  setUserStatus: () => void;
+  setUserStatus: (status: string) => ThunkType;
   isOwner: boolean;
-  setAvatar: () => void;
+  setAvatar: (file: File| null) => ThunkType;
   changeMode:() => void;
   editProfileMode: boolean;
-  setUserProfileInformation: () => void;
+  setUserProfileInformation: (information: ProfileType) => SetUserThunkType;
   userId: number | null;
 }
 

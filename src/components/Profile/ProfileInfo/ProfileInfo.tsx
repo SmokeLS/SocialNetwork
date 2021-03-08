@@ -6,16 +6,17 @@ import ProfileStatus from './ProfileStatus';
 import FormProfileData from './FormProfileData';
 import EditFormProfileData from './EditFormProfileData';
 import { ProfileType } from '../../../types/types';
+import { SetUserThunkType, ThunkType } from '../../../redux/profile-reducer';
 
 type PropsType = {
   profile: ProfileType | null;
-  setUserStatus: () => void;
+  setUserStatus: (status: string) => ThunkType;
   status: string;
   isOwner: boolean;
-  setAvatar: (file: File | null) => void;
+  setAvatar: (file: File | null) => ThunkType;
   changeMode: () => void;
   editProfileMode: boolean;
-  setUserProfileInformation: () => void;
+  setUserProfileInformation: (information: ProfileType) => SetUserThunkType;
 }
 
 const ProfileInfo : React.FC<PropsType> = (props) => {
