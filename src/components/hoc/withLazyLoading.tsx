@@ -1,10 +1,10 @@
 import React, { Suspense } from 'react';
 
-const withLazyLoading = (Component) => {
-  return (props) => {
+export function withLazyLoading<WCP>(WrappedComponent : React.ComponentType<WCP>){
+  return (props : WCP) => {
     return (
       <Suspense fallback={<div>Загрузка...</div>}>
-        <Component {...props} />
+        <WrappedComponent {...props} />
       </Suspense>
     );
   };

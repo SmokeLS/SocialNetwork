@@ -19,7 +19,7 @@ const initialState = {
   followingQuery: [] as Array<number>, // users' ID
 };
 
-type InitialStateType = typeof initialState;
+export type InitialStateType = typeof initialState;
 
 const usersReducer = (state = initialState, action: ActionsType<typeof actions>): InitialStateType => {
   switch (action.type) {

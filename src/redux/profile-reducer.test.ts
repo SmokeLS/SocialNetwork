@@ -1,4 +1,4 @@
-import profileReducer, { addPostActionCreator, deletePost } from './profile-reducer';
+import profileReducer, { actions} from './profile-reducer';
 
 const state = {
   posts: [
@@ -22,23 +22,28 @@ const state = {
       message: 'Dada',
       likesCount: 11,
     },
-  ],
+  ] as Array<PostType>,
+  profile: null as ProfileType | null,
+  userId: null as number | null,
+  editProfileMode: false,
+  status: '',
+  newPostText: '',
 };
 
 it('post is added', () => {
-  const action = addPostActionCreator('Something');
+  const action = actions.addPost('Something');
   const newState = profileReducer(state, action);
   expect(newState.posts.length).toBe(5);
 });
 
 it('post is deleted', () => {
-  const action = deletePost(2);
+  const action = actions.deletePost(2);
   const newState = profileReducer(state, action);
   expect(newState.posts.length).toBe(3);
 });
 
 it('post is not deleted', () => {
-  const action = deletePost(1000);
+  const action = actions.deletePost(1000);
   const newState = profileReducer(state, action);
   expect(newState.posts.length).toBe(4);
 });
