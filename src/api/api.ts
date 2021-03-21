@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { PhotosType, ProfileType, UserType } from '../types/types';
+import { FilterType, PhotosType, ProfileType, UserType } from '../types/types';
 
 const instance = axios.create({
   withCredentials: true,
@@ -53,8 +53,10 @@ type GetCaptchaType = {
 };
 
 export const userAPI = {
-  async getUsers(selectedPage = 1, pageSize = 5) {
-    const res = await instance.get<GetUsersType>(`users?page=${selectedPage}&count=${pageSize}`);
+  async getUsers(selectedPage = 1, pageSize = 5, filter: FilterType) {
+    const res = await instance.get<GetUsersType>(
+      `users?page=${selectedPage}&count=${pageSize}&term=${filter.term}&friend=${filter.friend}`,
+    );
     return res.data;
   },
   async follow(userId: number) {

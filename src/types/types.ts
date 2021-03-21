@@ -37,3 +37,8 @@ export type UserType = {
   photos: PhotosType;
   followed: boolean;
 };
+
+export type FilterType = {
+  term: string;
+  friend: boolean | null;
+};

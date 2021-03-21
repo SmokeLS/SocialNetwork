@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux';
 import { ResponseCodeType, userAPI } from '../api/api';
-import { UserType } from '../types/types';
+import { UserType, FilterType } from '../types/types';
 import { ActionsType, ThunkActionType } from './redux-store';
 
 const FOLLOW_TOGGLE = 'user/FOLLOW_TOGGLE';
@@ -9,6 +9,7 @@ const SET_TOTAL_COUNT = 'user/SET_TOTAL_COUNT';
 const SET_SELECTED_PAGE = 'user/SET_SELECTED_PAGE';
 const IS_LOADING_NOW = 'user/IS_LOADING_NOW';
 const IS_FOLLOWING_NOW = 'user/IS_FOLLOWING_NOW';
+const SET_FILTER = 'user/SET_FILTER';
 
 const initialState = {
   users: [] as Array<UserType>,
@@ -17,6 +18,10 @@ const initialState = {
   totalCount: 0,
   isLoading: false,
   followingQuery: [] as Array<number>, // users' ID
+  filter: {
+    term: '',
+    friend: null as null | boolean,
+  },
 };
 
 export type InitialStateType = typeof initialState;
@@ -78,6 +83,15 @@ const usersReducer = (state = initialState, action: ActionsType<typeof actions>)
         };
       }
     }
+    case SET_FILTER: {
+      return {
+        ...state,
+        filter: {
+          term: action.filter.term,
+          friend: action.filter.friend,
+        },
+      };
+    }
     default: {
       return state;
     }
@@ -116,15 +130,24 @@ export const actions = {
       isLoading,
       userId,
     } as const),
+  setFilter: (filter: FilterType) =>
+    ({
+      type: SET_FILTER,
+      filter,
+    } as const),
 };
 
 type DispatchType = Dispatch<ActionsType<typeof actions>>;
 type ThunkType = ThunkActionType<ActionsType<typeof actions>>;
 
-export const requestUsers = (selectedPage: number, pageSize: number): ThunkType => async (dispatch) => {
+export const requestUsers = (selectedPage: number, pageSize: number, filter: FilterType): ThunkType => async (
+  dispatch,
+) => {
   dispatch(actions.isLoadingNow(true));
+  dispatch(actions.setFilter(filter));
+  dispatch(actions.setSelectedPage(selectedPage));
 
-  const data = await userAPI.getUsers(selectedPage, pageSize);
+  const data = await userAPI.getUsers(selectedPage, pageSize, filter);
   dispatch(actions.setUsers(data.items));
   dispatch(actions.isLoadingNow(false));
   dispatch(actions.setTotalCount(data.totalCount));

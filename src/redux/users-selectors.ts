@@ -23,3 +23,7 @@ export const getIsLoading = (state: AppStateType) => {
 export const getFollowingQuery = (state: AppStateType) => {
   return state.usersPage.followingQuery;
 };
+
+export const getFilteredUsers = (state: AppStateType) => {
+  return state.usersPage.filter;
+};

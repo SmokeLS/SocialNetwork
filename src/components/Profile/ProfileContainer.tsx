@@ -18,31 +18,31 @@ import { AppStateType } from '../../redux/redux-store';
 
 type MapStatePropsType = {
   profile: ProfileType | null;
-  status: string,
-  userId: number| null,
-  editProfileMode: boolean,
-}
+  status: string;
+  userId: number | null;
+  editProfileMode: boolean;
+};
 
 type MapDispatchPropsType = {
   getUsersProfile: (userId: number) => ThunkType;
   getUserStatus: (userId: number) => ThunkType;
   setUserStatus: (status: string) => ThunkType;
-  setAvatar: (file: File| null) => ThunkType;
+  setAvatar: (file: File | null) => ThunkType;
   changeMode: () => void;
   setUserProfileInformation: (information: ProfileType) => SetUserThunkType;
-}
+};
 
 type OwnPropsType = {
-  userId?: string
-}
+  userId?: string;
+};
 
 type WithRouterType = RouteComponentProps<OwnPropsType> & {
- userId?: string
-}
+  userId?: string;
+};
 
 type PropsType = MapStatePropsType & MapDispatchPropsType & WithRouterType;
 
-class ProfileContainer extends React.Component<PropsType>{
+class ProfileContainer extends React.Component<PropsType> {
   refreshProfile() {
     const { getUsersProfile, getUserStatus, history } = this.props;
 
@@ -55,7 +55,7 @@ class ProfileContainer extends React.Component<PropsType>{
       }
     }
 
-    const numUserId : number = Number(userId);
+    const numUserId: number = Number(userId);
 
     getUsersProfile(numUserId);
     getUserStatus(numUserId);
@@ -78,7 +78,7 @@ class ProfileContainer extends React.Component<PropsType>{
   }
 }
 
-const mapStateToProps = (state: AppStateType) : MapStatePropsType => {
+const mapStateToProps = (state: AppStateType): MapStatePropsType => {
   return {
     profile: state.profilePage.profile,
     status: state.profilePage.status,
@@ -90,7 +90,7 @@ const mapStateToProps = (state: AppStateType) : MapStatePropsType => {
 const changeMode = actions.changeMode;
 
 export default compose(
-  connect<MapStatePropsType, MapDispatchPropsType,OwnPropsType,AppStateType>(mapStateToProps, {
+  connect<MapStatePropsType, MapDispatchPropsType, OwnPropsType, AppStateType>(mapStateToProps, {
     getUsersProfile,
     getUserStatus,
     setUserStatus,
@@ -99,4 +99,4 @@ export default compose(
     setUserProfileInformation,
   }),
   withRouter,
-)(ProfileContainer);
+)(ProfileContainer) as React.ComponentType;
