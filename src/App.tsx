@@ -24,11 +24,13 @@ const UsersContainer = React.lazy(() => import('./components/Users/UsersContaine
 const DialogsContainer = React.lazy(() => import('./components/Dialogs/DialogsContainer'));
 const ProfileContainer = React.lazy(() => import('./components/Profile/ProfileContainer'));
 const NotFoundPage = React.lazy(() => import('./components/Pages/NotFoundPage'));
+const ChatPage = React.lazy(() => import('./components/Pages/Chat/Chat'));
 
 const DialogsContainerWithLazy = withLazyLoading(DialogsContainer);
 const ProfileContainerWithLazy = withLazyLoading(ProfileContainer);
 const UsersContainerWithLazy = withLazyLoading(UsersContainer);
 const NotFoudPageWithLazy = withLazyLoading(NotFoundPage);
+const ChatPageWithLazy = withLazyLoading(ChatPage);
 
 class App extends React.Component<PropsType> {
   componentDidMount() {
@@ -56,6 +58,9 @@ class App extends React.Component<PropsType> {
                 <Menu.Item key="3">
                   <NavLink to="/users">Users</NavLink>
                 </Menu.Item>
+                <Menu.Item key="4">
+                  <NavLink to="/chat">Chat</NavLink>
+                </Menu.Item>
               </Menu>
             </Sider>
             <Content style={{ padding: '0 24px', minHeight: 280 }}>
@@ -67,6 +72,7 @@ class App extends React.Component<PropsType> {
                 <Route path="/profile/:userId?" render={() => <ProfileContainerWithLazy />} />
                 <Route path="/users" render={() => <UsersContainerWithLazy />} />
                 <Route path="/login" render={() => <Login />} />
+                <Route path="/chat" render={() => <ChatPageWithLazy />} />
                 <Route path="*" render={() => <NotFoudPageWithLazy />} />
               </Switch>
             </Content>
