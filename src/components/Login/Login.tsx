@@ -10,11 +10,11 @@ type MapStateToPropsType = {
   isAuth: boolean;
   error: any;
   captchaUrl: string | null;
-}
+};
 
 type MapDispatchToPropsType = {
-  signIn: (login: string, password: string, rememberMe: boolean, captchaUrl: string |null) => void;
-}
+  signIn: (login: string, password: string, rememberMe: boolean, captchaUrl: string | null) => void;
+};
 
 type PropsType = MapStateToPropsType & MapDispatchToPropsType;
 
@@ -23,20 +23,20 @@ type FinalFormType = {
   password: string;
   rememberMe?: boolean;
   captchaUrl?: string | null;
-}
+};
 
-const Login : React.FC<PropsType> = (props) => {
-  const onSubmitForm = ({login, password, rememberMe = false, captchaUrl = null} : FinalFormType) => {
+const Login: React.FC<PropsType> = (props) => {
+  const onSubmitForm = ({ login, password, rememberMe = false, captchaUrl = null }: FinalFormType) => {
     props.signIn(login, password, rememberMe, captchaUrl);
   };
 
-  const {Form} = withTypes<FinalFormType, PropsType>();
+  const { Form } = withTypes<FinalFormType, PropsType>();
 
   return (
     <div>
       <h1>Login</h1>
       <Form
-        onSubmit={(values:FinalFormType) => onSubmitForm(values)}
+        onSubmit={(values: FinalFormType) => onSubmitForm(values)}
         render={({ handleSubmit }) => (
           <form onSubmit={handleSubmit}>
             <Field name="login" validate={required}>
@@ -83,12 +83,14 @@ const Login : React.FC<PropsType> = (props) => {
   );
 };
 
-const mapStateToProps = (state : AppStateType) : MapStateToPropsType=> ({
+const mapStateToProps = (state: AppStateType): MapStateToPropsType => ({
   isAuth: state.auth.isAuth,
   error: state.auth.error,
   captchaUrl: state.auth.captchaUrl,
 });
 
-const LoginReactForm = connect<MapStateToPropsType,MapDispatchToPropsType,null,AppStateType>(mapStateToProps, { signIn })(Login);
+const LoginReactForm = connect<MapStateToPropsType, MapDispatchToPropsType, null, AppStateType>(mapStateToProps, {
+  signIn,
+})(Login);
 
-export default LoginReactForm;
+export default (LoginReactForm as unknown) as React.ComponentType;

@@ -9,14 +9,14 @@ type PropsType = {
   status: string;
   setUserStatus: (status: string) => ThunkType;
   isOwner: boolean;
-  setAvatar: (file: File| null) => ThunkType;
-  changeMode:() => void;
+  setAvatar: (file: File | null) => ThunkType;
+  changeMode: () => void;
   editProfileMode: boolean;
   setUserProfileInformation: (information: ProfileType) => SetUserThunkType;
   userId: number | null;
-}
+};
 
-const Profile : React.FC<PropsType> = (props) => {
+const Profile: React.FC<PropsType> = (props) => {
   const {
     profile,
     status,
@@ -40,7 +40,7 @@ const Profile : React.FC<PropsType> = (props) => {
         editProfileMode={editProfileMode}
         setUserProfileInformation={setUserProfileInformation}
       />
-      <MyPostsContainer profile={profile} />
+      <MyPostsContainer />
     </div>
   );
 };

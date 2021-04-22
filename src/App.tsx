@@ -9,7 +9,6 @@ import Preloader from './components/common/Preloader/Preloader';
 import withLazyLoading from './components/hoc/withLazyLoading';
 import HeaderContainer from './components/Header/HeaderContainer';
 import { Layout, Menu } from 'antd';
-
 import 'antd/dist/antd.css';
 import { AppStateType } from './redux/redux-store';
 
