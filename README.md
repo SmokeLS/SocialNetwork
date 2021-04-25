@@ -1,4 +1,10 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Деплой приложения не возможен из-за отстутствия платной подписки на API, для просмотра содержимого необходимо склонировать репозиторий и установить.
+
+Для входа в социальную сеть используйте следующие данные:
+login: smokels1998@gmail.com
+password: smokels1998@gmail.com
+
+##This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
